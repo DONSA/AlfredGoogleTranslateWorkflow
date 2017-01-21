@@ -1,7 +1,7 @@
 Google Translate Alfred Workflow
 =============================
 
-# Version 3.1.2
+# Version 3.2
 
 ## Changelog
 
@@ -12,22 +12,15 @@ Google Translate Alfred Workflow
 
 The MIT License (MIT)
 
-Copyright (c) 2013-2016 Thomas Hempel <thomas@scriptme.de>
-
-**Thanks to everyone who uses this workflow, gives feedback and provides fixes. You are awesome!!!**
-
-**If you like the Workflow and use it a lot, please consider a small donation via [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=54USV9NXE9WFY).** _If you don't like PayPal but still want to give me a little something, feel free to contact me via the e-mail address above. :-)_
-
-A workflow for Alfred 2 that implements translation from any language to any other language known to Google.
-
-It's based on PHP and not very complex to understand.
+A workflow for Alfred 3 that implements translation from any language to any other language known to Google.
 
 ## How to install
-Just download and double click the [workflow file](https://github.com/thomashempel/AlfredGoogleTranslateWorkflow/releases)
-Say "yes" to import it into Alfred. Done!
+Download and double click the [workflow file](https://github.com/DONSA/AlfredGoogleTranslateWorkflow/releases)
+Say "yes" to import or update it into Alfred. Done!
 
 ## How to use
 Open Alfred and type "translate" (or "gt") followed by the shortcode for the target language like "en" (english), "de" (german) or "it" (italian). You can find a complete list at the end of this document.
+Alternatively you can use the **⇧ + ⌘ + i** shortcut.
 
 Since Version 3.0.0 there is a new target language format available. It is a simple comma separated list. In other words, if you want to translate to a specific combination of languages you can achieve that like this:
 
@@ -159,20 +152,8 @@ __To set any option back to it's default value, you can simply set "default" as 
 * cy = Welsh
 * yi = Yiddish
 
-## Screenshots
-This is how it should look like:
-
-<img src="GoogleTranslate1.png" />
-<img src="GoogleTranslate2.png" />
-<img src="GoogleTranslate3.png" />
-<img src="GoogleTranslate4.png" />
-
-## The end
+## Suggestions
 
 Thanks for using the workflow!
 Feel free to fork and/or make suggestions.
 
-If you like the Workflow and use it a lot, please consider a small donation via [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=54USV9NXE9WFY).
-
-Best wishes,
-Thomas
