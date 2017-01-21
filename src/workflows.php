@@ -62,11 +62,7 @@ class Workflows {
 	*/
 	public function bundle()
 	{
-		if ( is_null( $this->bundle ) ):
-			return false;
-		else:
-			return $this->bundle;
-		endif;
+		return !$this->bundle ? false : $this->bundle;
 	}
 
 	/**
@@ -165,9 +161,9 @@ class Workflows {
 	* @param $format - format of data being passed (json or array), defaults to array
 	* @return - XML string representation of the array
 	*/
-	public function toxml( $a=null, $format='array' ) {
+	public function toxml($a = null, $format = 'array') {
 
-		if ( $format == 'json' ):
+		if ($format == 'json'):
 			$a = json_decode( $a, TRUE );
 		endif;
 

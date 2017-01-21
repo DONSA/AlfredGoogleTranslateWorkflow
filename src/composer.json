@@ -1,4 +1,15 @@
 {
+    "name": "thomashempel/AlfredGoogleTranslateWorkflow",
+    "description": "Free Google Translate Workflow for Alfred 2",
+    "keywords": ["google", "translate", "alfred", "php"],
+    "license": "MIT",
+    "homepage": "https://github.com/thomashempel/AlfredGoogleTranslateWorkflow",
+    "authors": [
+        {
+            "name": "Thomas Hempel",
+            "email": "thomas@scriptme.de"
+        }
+    ],
     "require": {
         "stichoza/google-translate-php": "^3.2"
     }

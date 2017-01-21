@@ -113,7 +113,7 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
 			}
 		}
 
-		return array(strtolower($sourceLanguage), strtolower($targetLanguage));
+		return [strtolower($sourceLanguage), strtolower($targetLanguage)];
 	}
 
 	protected function fetchGoogleTranslation($sourceLanguage, $targetLanguage, $phrase)
@@ -132,9 +132,9 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
 			foreach ($googleResults as $targetLanguage => $result) {
 				if (is_array($result)) {
 					$xml->addItem(array(
-						'arg' 		=> $this->getUserURL($result[1], $targetLanguage, $sourcePhrase).'|'.$result[0],
+						'arg' 		=> $this->getUserURL($result[1], $targetLanguage, $sourcePhrase).'|'.$result[0][0][0],
 						'valid'		=> 'yes',
-						'title' 	=> $result[0],
+						'title' 	=> $result[0][0][0],
 						'subtitle'	=> $sourcePhrase.' ('.$this->languages->map($result[1]).')',
 						'icon'		=> $this->getFlag($targetLanguage)
 					));
