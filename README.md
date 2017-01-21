@@ -15,12 +15,10 @@ The MIT License (MIT)
 A workflow for Alfred 3 that implements translation from any language to any other language known to Google.
 
 ## How to install
-Download and double click the [workflow file](https://github.com/DONSA/AlfredGoogleTranslateWorkflow/releases)
-Say "yes" to import or update it into Alfred. Done!
+Download and double click the [workflow file](https://github.com/DONSA/AlfredGoogleTranslateWorkflow/blob/master/Google%20Translate.alfredworkflow). Double click to import or update it into Alfred. Done!
 
 ## How to use
-Open Alfred and type "translate" (or "gt") followed by the shortcode for the target language like "en" (english), "de" (german) or "it" (italian). You can find a complete list at the end of this document.
-Alternatively you can use the **⇧ + ⌘ + i** shortcut.
+Use the **⇧ + ⌘ + i** shortcut or type "translate" (or "gt") followed by the shortcode for the target language like "en" (english), "de" (german) or "it" (italian). You can find a complete list at the end of this document.
 
 Since Version 3.0.0 there is a new target language format available. It is a simple comma separated list. In other words, if you want to translate to a specific combination of languages you can achieve that like this:
 
