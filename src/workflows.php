@@ -2,13 +2,13 @@
 /**
 * Name: 		Workflows
 * Description: 	This PHP class object provides several useful functions for retrieving, parsing,
-* 				and formatting data to be used with Alfred 2 Workflows.
-* Author: 		David Ferguson (@jdfwarrior)
-* Revised: 		6/6/2013
-* Version:		0.3.3
+* 				and formatting data to be used with Alfred 3 Workflows.
+* Author: 		Nuno Lopes (@DONSA)
+* Revised: 		5/02/2016
+* Version:		3.2.1
 */
-class Workflows {
-
+class Workflows
+{
 	private $cache;
 	private $data;
 	private $bundle;
@@ -17,39 +17,39 @@ class Workflows {
 	private $results;
 
 	/**
-	* Description:
 	* Class constructor function. Intializes all class variables. Accepts one optional parameter
 	* of the workflow bundle id in the case that you want to specify a different bundle id. This
 	* would adjust the output directories for storing data.
 	*
 	* @param $bundleid - optional bundle id if not found automatically
+	*
 	* @return none
 	*/
-	function __construct( $bundleid=null )
+	function __construct($bundleid=null)
 	{
 		$this->path = exec('pwd');
-		$this->home = exec('printf "$HOME"');
+        $this->home = exec('printf "$HOME"');
 
-		if ( file_exists( 'info.plist' ) ):
+		if (file_exists('info.plist')):
 			$this->bundle = $this->get( 'bundleid', 'info.plist' );
 		endif;
 
-		if ( !is_null( $bundleid ) ):
+		if (!is_null($bundleid)):
 			$this->bundle = $bundleid;
 		endif;
 
-		$this->cache = $this->home. "/Library/Caches/com.runningwithcrayons.Alfred-2/Workflow Data/".$this->bundle;
-		$this->data  = $this->home. "/Library/Application Support/Alfred 2/Workflow Data/".$this->bundle;
+		$this->cache = "{$this->home}/Library/Caches/com.runningwithcrayons.Alfred-3/Workflow Data/{$this->bundle}";
+		$this->data  = "{$this->home}/Library/Application Support/Alfred 3/Workflow Data/{$this->bundle}";
 
-		if ( !file_exists( $this->cache ) ):
-			exec("mkdir '".$this->cache."'");
+		if (!file_exists($this->cache)):
+			exec("mkdir '{$this->cache}'");
 		endif;
 
-		if ( !file_exists( $this->data ) ):
-			exec("mkdir '".$this->data."'");
+		if (!file_exists($this->data)):
+			exec("mkdir '{$this->data}'");
 		endif;
 
-		$this->results = array();
+		$this->results = [];
 	}
 
 	/**
@@ -134,7 +134,7 @@ class Workflows {
 	*/
 	public function home()
 	{
-		if ( is_null( $this->home ) ):
+		if (is_null($this->home)):
 			return false;
 		else:
 			return $this->home;
