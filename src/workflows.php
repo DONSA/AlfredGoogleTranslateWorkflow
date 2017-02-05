@@ -17,18 +17,17 @@ class Workflows
 	private $results;
 
 	/**
-	* Class constructor function. Intializes all class variables. Accepts one optional parameter
-	* of the workflow bundle id in the case that you want to specify a different bundle id. This
-	* would adjust the output directories for storing data.
-	*
-	* @param $bundleid - optional bundle id if not found automatically
-	*
-	* @return none
-	*/
+	 * Class constructor function. Intializes all class variables. Accepts one optional parameter
+	 * of the workflow bundle id in the case that you want to specify a different bundle id. This
+	 * would adjust the output directories for storing data.
+	 *
+	 * @param $bundleid - optional bundle id if not found automatically
+	 *
+	 * @return none
+	 */
 	function __construct($bundleid=null)
 	{
 		$this->path = exec('pwd');
-        $this->home = exec('printf "$HOME"');
 
 		if (file_exists('info.plist')):
 			$this->bundle = $this->get( 'bundleid', 'info.plist' );
@@ -38,8 +37,8 @@ class Workflows
 			$this->bundle = $bundleid;
 		endif;
 
-		$this->cache = "{$this->home}/Library/Caches/com.runningwithcrayons.Alfred-3/Workflow Data/{$this->bundle}";
-		$this->data  = "{$this->home}/Library/Application Support/Alfred 3/Workflow Data/{$this->bundle}";
+		$this->cache = $_SERVER['alfred_workflow_cache'];
+		$this->data = $_SERVER['alfred_workflow_data'];
 
 		if (!file_exists($this->cache)):
 			exec("mkdir '{$this->cache}'");
@@ -121,23 +120,6 @@ class Workflows
 			return false;
 		else:
 			return $this->path;
-		endif;
-	}
-
-	/**
-	* Description:
-	* Accepts no parameter and returns the value of the home path for the current user
-	* Returns false if the value isn't available.
-	*
-	* @param none
-	* @return false if not available, home path for the current user if available.
-	*/
-	public function home()
-	{
-		if (is_null($this->home)):
-			return false;
-		else:
-			return $this->home;
 		endif;
 	}
 

@@ -1,7 +1,7 @@
 Google Translate Alfred Workflow
 =============================
 
-# Version 3.2.1
+# Version 3.3
 
 ## Changelog
 
