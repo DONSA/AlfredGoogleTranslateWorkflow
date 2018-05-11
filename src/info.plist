@@ -186,7 +186,7 @@
 	<key>createdby</key>
 	<string>DONSA</string>
 	<key>description</key>
-	<string>Translation using Google V3.2</string>
+	<string>Translation using Google</string>
 	<key>disabled</key>
 	<false/>
 	<key>name</key>
@@ -260,6 +260,10 @@ echo stripslashes($in[1]);</string>
 			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
 				<key>argumenttype</key>
 				<integer>0</integer>
 				<key>escaping</key>
@@ -267,7 +271,7 @@ echo stripslashes($in[1]);</string>
 				<key>keyword</key>
 				<string>translate</string>
 				<key>queuedelaycustom</key>
-				<integer>1</integer>
+				<integer>3</integer>
 				<key>queuedelayimmediatelyinitially</key>
 				<false/>
 				<key>queuedelaymode</key>
@@ -275,18 +279,17 @@ echo stripslashes($in[1]);</string>
 				<key>queuemode</key>
 				<integer>1</integer>
 				<key>runningsubtext</key>
-				<string></string>
+				<string>Translating...</string>
 				<key>script</key>
 				<string>require_once 'GoogleTranslateWorkflow.php';
 $gtwf = new GoogleTranslateWorkflow();
-echo $gtwf-&gt;process("{query}");
-</string>
+echo $gtwf-&gt;process("translate {query}");</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
-				<string>translate {from&gt;to OR to&lt;from OR to} {searchword}</string>
+				<string></string>
 				<key>title</key>
 				<string>Translate to language</string>
 				<key>type</key>
@@ -378,6 +381,10 @@ echo stripslashes($in[1]);</string>
 			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
 				<key>argumenttype</key>
 				<integer>0</integer>
 				<key>escaping</key>
@@ -403,7 +410,7 @@ echo $gtwf-&gt;process("{query}");</string>
 				<key>scriptfile</key>
 				<string></string>
 				<key>subtext</key>
-				<string>translate {from&gt;to OR to&lt;from OR to} {searchword}</string>
+				<string>translate {from&gt;to OR to&lt;from OR to} {search}</string>
 				<key>title</key>
 				<string>Translate to language</string>
 				<key>type</key>
@@ -491,6 +498,10 @@ echo $in[0];</string>
 			<dict>
 				<key>alfredfiltersresults</key>
 				<false/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>0</integer>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
 				<key>argumenttype</key>
 				<integer>0</integer>
 				<key>escaping</key>
@@ -655,6 +666,8 @@ It displays all possible translations that Google has to offer.</string>
 			<real>250</real>
 		</dict>
 	</dict>
+	<key>version</key>
+	<string>3.4.0</string>
 	<key>webaddress</key>
 	<string></string>
 </dict>

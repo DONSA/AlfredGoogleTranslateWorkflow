@@ -1,16 +1,16 @@
 {
-    "name": "thomashempel/AlfredGoogleTranslateWorkflow",
-    "description": "Free Google Translate Workflow for Alfred 2",
+    "name": "DONSA/AlfredGoogleTranslateWorkflow",
+    "description": "Free Google Translate Workflow for Alfred 3",
     "keywords": ["google", "translate", "alfred", "php"],
     "license": "MIT",
-    "homepage": "https://github.com/thomashempel/AlfredGoogleTranslateWorkflow",
+    "homepage": "https://github.com/DONSA/AlfredGoogleTranslateWorkflow",
     "authors": [
         {
-            "name": "Thomas Hempel",
-            "email": "thomas@scriptme.de"
+            "name": "Nuno Lopes",
+            "email": "nunolopes99@gmail.com"
         }
     ],
     "require": {
-        "stichoza/google-translate-php": "^3.2"
+        "stichoza/google-translate-php": "~3.2"
     }
 }

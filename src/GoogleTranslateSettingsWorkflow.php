@@ -28,206 +28,132 @@ require './GoogleTranslateWorkflowBase.php';
 
 class GoogleTranslateSettingsWorkflow extends GoogleTranslateWorkflowBase
 {
+    /**
+     * @param string $request
+     *
+     * @return AlfredResult
+     */
+    public function process($request)
+    {
+        $this->log($request);
 
-	public function process($request)
-	{
-		$this->log($request);
+        $requestParts = explode(' ', $request);
+        $command = array_shift($requestParts);
 
-		$requestParts = explode(' ', $request);
-		$command = array_shift($requestParts);
-		$phrase = (count($requestParts) > 0) ? implode(' ', $requestParts) : $command;
-		$result = '';
+        if ($command == 'show') {
+            $result = $this->showSettings();
+        } else {
+            $result = $this->set($command, $requestParts[0]);
+        }
 
-		if ($command == 'show') {
-			$result = $this->showSettings();
+        $this->log($result);
 
-		} else {
-			$result = $this->set($command, $requestParts[0]);
+        return $result;
+    }
 
-		}
+    /**
+     * @param string $request
+     *
+     * @return string
+     */
+    public function store($request)
+    {
+        list($option, $value) = explode(':', $request);
+        $this->settings[trim($option)] = trim($value);
+        $this->saveSettings();
 
-		$this->log($result);
-		return $result;
-	}
+        return "{$option} set to {$value}";
+    }
 
-	public function store($request)
-	{
-		// file_put_contents('/tmp/alfed.log', print_r($this->settings, true));
-		list($option, $value) = explode(':', $request);
-		$this->settings[trim($option)] = trim($value);
-		$this->saveSettings();
-		// file_put_contents('/tmp/alfed.log', print_r($this->settings, true));
-		// file_put_contents('/tmp/alfed.log', print_r(array($option, $value), true));
-		return $option . ' set to ' . $value;
-	}
+    /**
+     * @return AlfredResult
+     */
+    protected function showSettings()
+    {
+        $xml = new AlfredResult();
+        $xml->setShared('uid', 'setting');
+        $this->log($this->settings, 'SHOW settings');
 
-	protected function showSettings()
-	{
-		$xml = new AlfredResult();
-		$xml->setShared('uid', 'setting');
-		$this->log($this->settings, 'SHOW settings');
+        foreach ($this->settings as $settingKey => $settingValue) {
+            $xml->addItem([
+                'arg' => $settingKey,
+                'valid' => 'yes',
+                'title' => "{$settingKey}={$settingValue}"
+            ]);
+        }
 
-		foreach ($this->settings as $settingKey => $settingValue) {
-			$xml->addItem(array(
-				'arg' 	=> $settingKey,
-				'valid'	=> 'yes',
-				'title'	=> $settingKey . ' = ' . $settingValue
-			));
-		}
+        return $xml;
+    }
 
-		return $xml;
-	}
+    /**
+     * @param string $setting
+     * @param string $value
+     *
+     * @return AlfredResult $xml
+     */
+    protected function set($setting, $value)
+    {
+        $xml = new AlfredResult();
+        $xml->setShared('uid', 'setting');
+        $setLength = strlen($setting);
+        $validOptionKeys = array_keys($this->validOptions);
 
+        if (!in_array($setting, $validOptionKeys)) {
+            // Find valid options
+            $valid = array_filter($validOptionKeys, function($value) use($setting, $setLength) {
+                return ($setting  == strtolower(substr($value, 0, $setLength)));
+            });
 
-	protected function set($setting, $value)
-	{
-		$xml = new AlfredResult();
-		$xml->setShared('uid', 'setting');
-		$setLength = strlen($setting);
-		$validOptionKeys = array_keys($this->validOptions);
+            if (count($valid) > 0) {
+                foreach ($valid as $optionKey) {
+                    $xml->addItem([
+                        'title' => $this->validOptions[$optionKey],
+                        'subtitle' => $optionKey,
+                        'autocomplete' => $optionKey
+                    ]);
+                }
+            } else {
+                $xml->addItem(['title' => "Unknown option {$value}"]);
+            }
+        } else {
+            $item = ['title' => $setting];
 
-		if (!in_array($setting, $validOptionKeys)) {
-			// find valid options
-			$valid = array_filter($validOptionKeys, function($value) use($setting, $setLength) {
-				return ($setting  == strtolower(substr($value, 0, $setLength)));
-			});
+            if (empty($value)) {
+                $item['subtitle'] = "Current value = {$this->settings[$setting]}";
+            } else {
+                $trimmedValue = strtolower(trim($value));
 
-			if (count($valid) > 0) {
-				foreach ($valid as $optionKey) {
- 					$xml->addItem(array('title' => $this->validOptions[$optionKey], 'subtitle' => $optionKey, 'autocomplete' => $optionKey));
-				}
+                if ($trimmedValue == 'default') {
+                    $trimmedValue = $this->defaultSettings[$setting];
+                }
 
-			} else {
-				$xml->addItem(array('title' => 'Unknown option ' . $value));
+                if ($this->languages->isAvailable($trimmedValue)) {
+                    $item['subtitle'] = 'New value = ' . $trimmedValue;
+                    $item['arg'] = "{$setting}:{$trimmedValue}";
+                } else {
+                    $requestedLanguages = explode(',', $trimmedValue);
+                    $validLanguages = [];
+                    foreach ($requestedLanguages as $languageKey) {
+                        $trimmedKey = trim($languageKey);
+                        if ($this->languages->isAvailable($trimmedKey)) {
+                            $validLanguages[$trimmedKey] = $this->languages->map($trimmedKey);
+                        }
+                    }
 
-			}
+                    if (count($validLanguages) > 0) {
+                        $checkedValue = implode(',', array_keys($validLanguages));
+                        $item['subtitle'] = "New value = " . implode(', ', $validLanguages) . " ({$checkedValue})";
+                        $item['arg'] = "{$setting}:{$checkedValue}";
+                    } else {
+                        $item['subtitle'] = "Invalid value {$value}";
+                    }
+                }
+            }
 
-		} else {
-			$item = array('title' => $setting);
+            $xml->addItem($item);
+        }
 
-			if (empty($value)) {
-				$item['subtitle'] = 'Current value = ' . $this->settings[$setting];
-
-			} else {
-				$trimmedValue = strtolower(trim($value));
-				if ($trimmedValue == 'default') {
-					$trimmedValue = $this->defaultSettings[$setting];
-				}
-
-				if ($this->languages->isAvailable($trimmedValue)) {
-					$item['subtitle'] = 'New value = ' . $trimmedValue;
-					$item['arg'] = $setting . ':' . $trimmedValue;
-
-				} else {
-					$requestedLanguages = explode(',', $trimmedValue);
-					$validLanguages = array();
-					foreach ($requestedLanguages as $languageKey) {
-						$trimmedKey = trim($languageKey);
-						if ($this->languages->isAvailable($trimmedKey)) {
-							$validLanguages[$trimmedKey] = $this->languages->map($trimmedKey);
-						}
-					}
-
-					if (count($validLanguages) > 0) {
-						$checkedValue = implode(',', array_keys($validLanguages));
-						$item['subtitle'] = 'New value = ' . implode(', ', $validLanguages) . ' (' . $checkedValue . ')';
-						$item['arg'] = $setting . ':' . $checkedValue;
-
-					} else {
-						$item['subtitle'] = 'Invalid value ' . $value;
-
-					}
-				}
-			}
-
-			$xml->addItem($item);
-		}
-
-		return $xml;
-	}
-
-
-	/**
- 	 * This exracts valid languages from an input string
-	 *
-	 * @param string $command
-	 *
-	 * @return array
- 	 */
-	protected function extractLanguages($command)
-	{
-		//
-		// First check wether both, source and target language, are set
-		//
-		if (strpos($command, '>') > 0) {
-			list($sourceLanguage, $targetLanguage) = explode('>', $command);
-		} elseif (strpos($command, '<') > 0) {
-			list($targetLanguage, $sourceLanguage) = explode('<', $command);
-		} else {
-			$targetLanguage = $command;
-		}
-
-		//
-		// Check if the source language is valid
-		//
-		if (!$this->languages->isAvailable($sourceLanguage)) {
-			$sourceLanguage = $this->settings['sourceLanguage'];
-		}
-
-		//
-		// Check if the target language is valid
-		//
-		if (!$this->languages->isAvailable($targetLanguage)) {
-			//
-			// If not, maybe multiple target languages are defined.
-			// Try to parse multiple target languages
-			//
-			$incomingTargetLanguages = explode(',', $targetLanguage);
-			$targetLanguageList = array();
-			foreach ($incomingTargetLanguages as $itl) {
-				if ($this->languages->isAvailable($itl)) {
-					$targetLanguageList[] = $itl;
-				}
-			}
-
-			//
-			// If any valid target languages are selected, write them back as csl
-			// or just return the default
-			//
-			if (count($targetLanguageList) == 0) {
-				$targetLanguage = $this->settings['targetLanguage'];
-			} else {
-				$targetLanguage = implode(',', $targetLanguageList);
-			}
-		}
-
-		return array(strtolower($sourceLanguage), strtolower($targetLanguage));
-	}
-
-	protected function getSimpleMessage($message, $subtitle = '')
-	{
-		$xml = new AlfredResult();
-		$xml->setShared('uid', 'mtranslate');
-		$xml->addItem(array('title' => $message, 'subtitle' => $subtitle));
-		return $xml;
-	}
-
-	protected function getUserURL($sourceLanguage, $targetLanguage, $phrase)
-	{
-		return 'https://translate.google.com/#'.$sourceLanguage.'/'.$targetLanguage.'/'.urlencode($phrase);
-	}
-
-	protected function getFlag($language)
-	{
-		$iconFilename = 'Icons/'.$language.'.png';
-		if (!file_exists($iconFilename)) {
-			$iconFilename = 'Icons/Unknown.png';
-		}
-
-		return $iconFilename;
-	}
-
-
-
+        return $xml;
+    }
 
 }
