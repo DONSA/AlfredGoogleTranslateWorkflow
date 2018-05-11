@@ -1,19 +1,11 @@
 <?php
-/**
-* Name: 		Workflows
-* Description: 	This PHP class object provides several useful functions for retrieving, parsing,
-* 				and formatting data to be used with Alfred 3 Workflows.
-* Author: 		Nuno Lopes (@DONSA)
-* Revised: 		5/02/2016
-* Version:		3.2.1
-*/
+
 class Workflows
 {
 	private $cache;
 	private $data;
 	private $bundle;
 	private $path;
-	private $home;
 	private $results;
 
 	/**
@@ -21,34 +13,34 @@ class Workflows
 	 * of the workflow bundle id in the case that you want to specify a different bundle id. This
 	 * would adjust the output directories for storing data.
 	 *
-	 * @param $bundleid - optional bundle id if not found automatically
+	 * @param $bundleId - optional bundle id if not found automatically
 	 *
-	 * @return none
+	 * @return void
 	 */
-	function __construct($bundleid=null)
+	function __construct($bundleId = null)
 	{
 		$this->path = exec('pwd');
 
-		if (file_exists('info.plist')):
-			$this->bundle = $this->get( 'bundleid', 'info.plist' );
-		endif;
+		if (file_exists('info.plist')) {
+            $this->bundle = $this->get('bundleid', 'info.plist');
+        }
 
-		if (!is_null($bundleid)):
-			$this->bundle = $bundleid;
-		endif;
+		if (!is_null($bundleId)) {
+            $this->bundle = $bundleId;
+        }
 
 		$this->cache = $_SERVER['alfred_workflow_cache'];
 		$this->data = $_SERVER['alfred_workflow_data'];
 
-		if (!file_exists($this->cache)):
-			exec("mkdir '{$this->cache}'");
-		endif;
+		if (!file_exists($this->cache)) {
+            exec("mkdir '{$this->cache}'");
+        }
 
-		if (!file_exists($this->data)):
-			exec("mkdir '{$this->data}'");
-		endif;
+        if (!file_exists($this->data)) {
+            exec("mkdir '{$this->data}'");
+        }
 
-		$this->results = [];
+        $this->results = [];
 	}
 
 	/**
@@ -56,8 +48,7 @@ class Workflows
 	* Accepts no parameter and returns the value of the bundle id for the current workflow.
 	* If no value is available, then false is returned.
 	*
-	* @param none
-	* @return false if not available, bundle id value if available.
+	* @return bool
 	*/
 	public function bundle()
 	{
@@ -69,105 +60,101 @@ class Workflows
 	* Accepts no parameter and returns the value of the path to the cache directory for your
 	* workflow if it is available. Returns false if the value isn't available.
 	*
-	* @param none
 	* @return false if not available, path to the cache directory for your workflow if available.
 	*/
-	public function cache()
-	{
-		if ( is_null( $this->bundle ) ):
-			return false;
-		else:
-			if ( is_null( $this->cache ) ):
-				return false;
-			else:
-				return $this->cache;
-			endif;
-		endif;
-	}
+    public function cache()
+    {
+        if (is_null($this->bundle)) {
+            return false;
+        }
 
-	/**
-	* Description:
-	* Accepts no parameter and returns the value of the path to the storage directory for your
-	* workflow if it is available. Returns false if the value isn't available.
-	*
-	* @param none
-	* @return false if not available, path to the storage directory for your workflow if available.
-	*/
-	public function data()
-	{
-		if ( is_null( $this->bundle ) ):
-			return false;
-		else:
-			if ( is_null( $this->data ) ):
-				return false;
-			else:
-				return $this->data;
-			endif;
-		endif;
-	}
+        if (is_null($this->cache)) {
+            return false;
+        }
 
-	/**
-	* Description:
-	* Accepts no parameter and returns the value of the path to the current directory for your
-	* workflow if it is available. Returns false if the value isn't available.
-	*
-	* @param none
-	* @return false if not available, path to the current directory for your workflow if available.
-	*/
-	public function path()
-	{
-		if ( is_null( $this->path ) ):
-			return false;
-		else:
-			return $this->path;
-		endif;
-	}
+        return $this->cache;
+    }
 
-	/**
-	* Description:
-	* Returns an array of available result items
-	*
-	* @param none
-	* @return array - list of result items
-	*/
-	public function results()
-	{
-		return $this->results;
-	}
+    /**
+    * Accepts no parameter and returns the value of the path to the storage directory for your
+     * workflow if it is available. Returns false if the value isn't available.
+     *
+     * @return bool
+     */
+    public function data()
+    {
+        if (is_null($this->bundle)) {
+            return false;
+        }
 
-	/**
-	* Description:
-	* Convert an associative array into XML format
-	*
-	* @param $a - An associative array to convert
-	* @param $format - format of data being passed (json or array), defaults to array
-	* @return - XML string representation of the array
-	*/
-	public function toxml($a = null, $format = 'array') {
+        if (is_null($this->data)) {
+            return false;
+        }
 
-		if ($format == 'json'):
-			$a = json_decode( $a, TRUE );
-		endif;
+        return $this->data;
+    }
 
-		if ( is_null( $a ) && !empty( $this->results ) ):
-			$a = $this->results;
-		elseif ( is_null( $a ) && empty( $this->results ) ):
-			return false;
-		endif;
+    /**
+     * Accepts no parameter and returns the value of the path to the current directory for your
+     * workflow if it is available. Returns false if the value isn't available.
+     *
+     * @return bool
+     */
+    public function path()
+    {
+        if (is_null($this->path)) {
+            return false;
+        }
 
-		$items = new SimpleXMLElement("<items></items>"); 	// Create new XML element
+        return $this->path;
+    }
 
-		foreach( $a as $b ):								// Lop through each object in the array
-			$c = $items->addChild( 'item' );				// Add a new 'item' element for each object
+    /**
+     * Returns an array of available result items
+     *
+     * @return array
+     */
+    public function results()
+    {
+        return $this->results;
+    }
+
+    /**
+     * Description:
+     * Convert an associative array into XML format
+     *
+     * @param string $data
+     * @param string $format
+     *
+     * @return string
+     */
+    public function toxml($data = "", $format = 'array')
+    {
+        if (!$data && empty($this->results) ) {
+            return "";
+        }
+
+        if ($format == 'json') {
+            $data = json_decode($data, true);
+        }
+
+        if (!$data && !empty($this->results)) {
+            $data = $this->results;
+        }
+
+        $items = new SimpleXMLElement("<items></items>");
+
+		foreach($data as $b):								// Lop through each object in the array
+			$c = $items->addChild('item');				// Add a new 'item' element for each object
 			$c_keys = array_keys( $b );						// Grab all the keys for that item
 			foreach( $c_keys as $key ):						// For each of those keys
-				if ( $key == 'uid' ):
+				if ($key == 'uid'):
 					if ( $b[$key] === null || $b[$key] === '' ):
 						continue;
 					else:
 						$c->addAttribute( 'uid', $b[$key] );
 					endif;
-				elseif ( $key == 'arg' ):
+				elseif ($key == 'arg'):
 					$c->addAttribute( 'arg', $b[$key] );
 					$c->$key = $b[$key];
 				elseif ( $key == 'type' ):
@@ -183,7 +170,7 @@ class Workflows
 						$c->addAttribute( 'autocomplete', $b[$key] );
 					endif;
 				elseif ( $key == 'icon' ):
-					if ( substr( $b[$key], 0, 9 ) == 'fileicon:' ):
+					if (substr( $b[$key], 0, 9 ) == 'fileicon:' ):
 						$val = substr( $b[$key], 9 );
 						$c->$key = $val;
 						$c->$key->addAttribute( 'type', 'fileicon' );
@@ -200,27 +187,24 @@ class Workflows
 			endforeach;
 		endforeach;
 
-		return $items->asXML();								// Return XML string representation of the array
-
+        return $items->asXML();
 	}
 
-	/**
-	* Description:
-	* Remove all items from an associative array that do not have a value
-	*
-	* @param $a - Associative array
-	* @return bool
-	*/
-	private function empty_filter( $a ) {
-		if ( $a == '' || $a == null ):						// if $a is empty or null
-			return false;									// return false, else, return true
-		else:
-			return true;
-		endif;
-	}
+    /**
+     * Remove all items from an associative array that do not have a value
+     *
+     * @param $a - Associative array
+     * @return bool
+     */
+    private function empty_filter( $a ) {
+        if ($a == '' || $a == null) {
+            return false;
+        }
+
+        return true;
+    }
 
 	/**
-	* Description:
 	* Save values to a specified plist. If the first parameter is an associative
 	* array, then the second parameter becomes the plist file to save to. If the
 	* first parameter is string, then it is assumed that the first parameter is
@@ -230,9 +214,8 @@ class Workflows
 	* @param $a - associative array of values to save
 	* @param $b - the value of the setting
 	* @param $c - the plist to save the values into
-	* @return string - execution output
 	*/
-	public function set( $a=null, $b=null, $c=null )
+	public function set($a = null, $b = null, $c = null)
 	{
 		if ( is_array( $a ) ):
 			if ( file_exists( $b ) ):
@@ -260,14 +243,14 @@ class Workflows
 			endif;
 		endif;
 
-		if ( is_array( $a ) ):
-			foreach( $a as $k => $v ):
-				exec( 'defaults write "'. $b .'" '. $k .' "'. $v .'"');
-			endforeach;
-		else:
-			exec( 'defaults write "'. $c .'" '. $a .' "'. $b .'"');
-		endif;
-	}
+        if (is_array($a)) {
+            foreach($a as $k => $v ) {
+                exec('defaults write "'. $b .'" '. $k .' "'. $v .'"');
+            }
+        } else {
+            exec('defaults write "'. $c .'" '. $a .' "'. $b .'"');
+        }
+    }
 
 	/**
 	* Description:
@@ -277,185 +260,190 @@ class Workflows
 	* @param $b - plist to read the values from
 	* @return bool false if not found, string if found
 	*/
-	public function get( $a, $b ) {
+    public function get($a, $b)
+    {
+        if (file_exists( $b ) ) {
+            if (file_exists($this->path.'/'.$b )) {
+                $b = $this->path.'/'.$b;
+            }
+        } elseif (file_exists($this->data."/".$b )) {
+            $b = $this->data . "/" . $b;
+        } elseif (file_exists($this->cache."/".$b)) {
+            $b = $this->cache . "/" . $b;
+        } else {
+            return false;
+        }
 
-		if ( file_exists( $b ) ):
-			if ( file_exists( $this->path.'/'.$b ) ):
-				$b = $this->path.'/'.$b;
-			endif;
- 		elseif ( file_exists( $this->data."/".$b ) ):
-			$b = $this->data."/".$b;
-		elseif ( file_exists( $this->cache."/".$b ) ):
-			$b = $this->cache."/".$b;
-		else:
-			return false;
-		endif;
+        exec('defaults read "'. $b .'" '.$a, $out );
 
-		exec( 'defaults read "'. $b .'" '.$a, $out );	// Execute system call to read plist value
+        if ($out == "") {
+            return false;
+        }
 
-		if ( $out == "" ):
-			return false;
-		endif;
+        $out = $out[0];
 
-		$out = $out[0];
-		return $out;											// Return item value
-	}
+        return $out;
+    }
+
+    /**
+     * Description:
+     * Read data from a remote file/url, essentially a shortcut for curl
+     *
+     * @param $url - URL to request
+     * @param $options - Array of curl options
+     *
+     * @return bool
+     */
+    public function request($url = null, $options = null)
+    {
+        if (is_null($url)) {
+            return false;
+        }
+
+        $defaults = [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_URL => $url,
+            CURLOPT_FRESH_CONNECT => true
+        ];
+
+        if ($options) {
+            foreach($options as $k => $v) {
+                $defaults[$k] = $v;
+            }
+        }
+
+        array_filter($defaults, [$this, 'empty_filter']);
+
+        $ch = curl_init();
+        curl_setopt_array($ch, $defaults);
+        $out = curl_exec($ch);
+        $err = curl_error($ch);
+        curl_close($ch);
+
+        if ($err) {
+            return $err;
+        }
+
+        return $out;
+    }
 
 	/**
-	* Description:
-	* Read data from a remote file/url, essentially a shortcut for curl
-	*
-	* @param $url - URL to request
-	* @param $options - Array of curl options
-	* @return result from curl_exec
-	*/
-	public function request( $url=null, $options=null )
-	{
-		if ( is_null( $url ) ):
-			return false;
-		endif;
-
-		$defaults = array(									// Create a list of default curl options
-			CURLOPT_RETURNTRANSFER => true,					// Returns the result as a string
-			CURLOPT_URL => $url,							// Sets the url to request
-			CURLOPT_FRESH_CONNECT => true
-		);
-
-		if ( $options ):
-			foreach( $options as $k => $v ):
-				$defaults[$k] = $v;
-			endforeach;
-		endif;
-
-		array_filter( $defaults, 							// Filter out empty options from the array
-			array( $this, 'empty_filter' ) );
-
-		$ch  = curl_init();									// Init new curl object
-		curl_setopt_array( $ch, $defaults );				// Set curl options
-		$out = curl_exec( $ch );							// Request remote data
-		$err = curl_error( $ch );
-		curl_close( $ch );									// End curl request
-
-		if ( $err ):
-			return $err;
-		else:
-			return $out;
-		endif;
-	}
-
-	/**
-	* Description:
 	* Allows searching the local hard drive using mdfind
 	*
 	* @param $query - search string
-	* @return array - array of search results
+     *
+	* @return array
 	*/
-	public function mdfind( $query )
+	public function mdfind($query)
 	{
-		exec('mdfind "'.$query.'"', $results);
-		return $results;
+        exec("mdfind '{$query}'", $results);
+
+        return $results;
 	}
 
-	/**
-	* Description:
-	* Accepts data and a string file name to store data to local file as cache
-	*
-	* @param array - data to save to file
-	* @param file - filename to write the cache data to
-	* @return none
-	*/
-	public function write( $a, $b )
+    /**
+     * Accepts data and a string file name to store data to local file as cache
+     *
+     * @param array $a - data to save to file
+     * @param string $b - filename to write the cache data to
+     *
+     * @return bool
+     */
+	public function write($a, $b)
 	{
-		if ( file_exists( $b ) ):
-			if ( file_exists( $this->path.'/'.$b ) ):
-				$b = $this->path.'/'.$b;
-			endif;
-		elseif ( file_exists( $this->data."/".$b ) ):
-			$b = $this->data."/".$b;
-		elseif ( file_exists( $this->cache."/".$b ) ):
-			$b = $this->cache."/".$b;
-		else:
-			$b = $this->data."/".$b;
-		endif;
+	    if (file_exists($b)) {
+            if (file_exists($this->path.'/'.$b) ) {
+                $b = $this->path.'/'.$b;
+            }
+        } elseif (file_exists($this->data."/".$b)) {
+            $b = $this->data."/".$b;
+        } elseif (file_exists($this->cache."/".$b)) {
+            $b = $this->cache."/".$b;
+        } else {
+            $b = $this->data."/".$b;
+        }
 
-		if ( is_array( $a ) ):
-			$a = json_encode( $a );
-			file_put_contents( $b, $a );
-			return true;
-		elseif ( is_string( $a ) ):
-			file_put_contents( $b, $a );
-			return true;
+        if (is_array($a)) {
+            $a = json_encode($a);
+            file_put_contents($b, $a);
+
+            return true;
+        }
+
+        if (is_string($a)) {
+            file_put_contents($b, $a);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns data from a local cache file
+     *
+     * @param string $filename
+     * @param bool   $isArray
+     *
+     * @return bool
+     */
+    public function read($filename, $isArray = false)
+    {
+		if (file_exists($filename)):
+			if ( file_exists( $this->path.'/'.$filename ) ):
+				$filename = $this->path.'/'.$filename;
+			endif;
+		elseif ( file_exists( $this->data."/".$filename ) ):
+			$filename = $this->data."/".$filename;
+		elseif ( file_exists( $this->cache."/".$filename ) ):
+			$filename = $this->cache."/".$filename;
 		else:
 			return false;
 		endif;
-	}
 
-	/**
-	* Description:
-	* Returns data from a local cache file
-	*
-	* @param file - filename to read the cache data from
-	* @return false if the file cannot be found, the file data if found. If the file
-	*			format is json encoded, then a json object is returned.
-	*/
-	public function read( $a, $array = false )
-	{
-		if ( file_exists( $a ) ):
-			if ( file_exists( $this->path.'/'.$a ) ):
-				$a = $this->path.'/'.$a;
-			endif;
-		elseif ( file_exists( $this->data."/".$a ) ):
-			$a = $this->data."/".$a;
-		elseif ( file_exists( $this->cache."/".$a ) ):
-			$a = $this->cache."/".$a;
-		else:
-			return false;
-		endif;
+        $out = file_get_contents($filename);
+        if (!is_null( json_decode($out) ) && !$isArray) {
+            $out = json_decode($out);
+        } elseif (!is_null( json_decode($out) ) && !$isArray ) {
+            $out = json_decode($out, true);
+        }
 
-		$out = file_get_contents( $a );
-		if ( !is_null( json_decode( $out ) ) && !$array ):
-			$out = json_decode( $out );
-		elseif ( !is_null( json_decode( $out ) ) && !$array ):
-			$out = json_decode( $out, true );
-		endif;
+        return $out;
+    }
 
-		return $out;
-	}
+    /**
+     * Helper function that just makes it easier to pass values into a function
+     * and create an array result to be passed back to Alfred
+     *
+     * @param $uid - the uid of the result, should be unique
+     * @param $arg - the argument that will be passed on
+     * @param $title - The title of the result item
+     * @param $sub - The subtitle text for the result item
+     * @param $icon - the icon to use for the result item
+     * @param $valid - sets whether the result item can be actioned
+     * @param $auto - the autocomplete value for the result item
+     * @return array $type - array item to be passed back to Alfred
+     */
+    public function result($uid, $arg, $title, $sub, $icon, $valid = 'yes', $auto = null, $type = null)
+    {
+        $temp = [
+            'uid' => $uid,
+            'arg' => $arg,
+            'title' => $title,
+            'subtitle' => $sub,
+            'icon' => $icon,
+            'valid' => $valid,
+            'autocomplete' => $auto,
+            'type' => $type
+        ];
 
-	/**
-	* Description:
-	* Helper function that just makes it easier to pass values into a function
-	* and create an array result to be passed back to Alfred
-	*
-	* @param $uid - the uid of the result, should be unique
-	* @param $arg - the argument that will be passed on
-	* @param $title - The title of the result item
-	* @param $sub - The subtitle text for the result item
-	* @param $icon - the icon to use for the result item
-	* @param $valid - sets whether the result item can be actioned
-	* @param $auto - the autocomplete value for the result item
-	* @return array - array item to be passed back to Alfred
-	*/
-	public function result( $uid, $arg, $title, $sub, $icon, $valid='yes', $auto=null, $type=null )
-	{
-		$temp = array(
-			'uid' => $uid,
-			'arg' => $arg,
-			'title' => $title,
-			'subtitle' => $sub,
-			'icon' => $icon,
-			'valid' => $valid,
-			'autocomplete' => $auto,
-			'type' => $type
-		);
+        if (is_null($type)) {
+            unset($temp['type']);
+        }
 
-		if ( is_null( $type ) ):
-			unset( $temp['type'] );
-		endif;
+        array_push($this->results, $temp);
 
-		array_push( $this->results, $temp );
-
-		return $temp;
-	}
+        return $temp;
+    }
 
 }
