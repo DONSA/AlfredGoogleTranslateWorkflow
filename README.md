@@ -2,7 +2,7 @@
 
 ## How to install
 
-Download and double click the [workflow](https://github.com/DONSA/alfred-google-translate/blob/master/google-translate.alfredworkflow) to import or update it into Alfred. Done!
+Download and double click the [workflow](https://github.com/DONSA/alfred-google-translate/raw/master/google-translate.alfredworkflow) to import or update it into Alfred. Done!
 
 
 ## How to use
