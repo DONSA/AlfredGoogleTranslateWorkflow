@@ -32,7 +32,7 @@ Class Languages
         'el' => 'Greek',
         'gu' => 'Gujarati',
         'ht' => 'Haitian Creole',
-        'iw' => 'Hebrew',
+        'he' => 'Hebrew',
         'hi' => 'Hindi',
         'hu' => 'Hungarian',
         'is' => 'Icelandic',
