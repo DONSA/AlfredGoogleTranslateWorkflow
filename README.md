@@ -29,7 +29,7 @@ Navigate through the results and press:
 
 ## Settings
 
-Show all available options and and their values:
+Show all available options and their values:
 ```
 gtset show
 ```
