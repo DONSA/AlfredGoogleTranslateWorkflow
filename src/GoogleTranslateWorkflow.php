@@ -20,8 +20,8 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
         $command = array_shift($requestParts);
         $phrase = (count($requestParts) > 0) ? implode(' ', $requestParts) : $command;
 
-        if (strlen($phrase) < 3) {
-            return $this->getSimpleMessage('More input needed', 'The word has to be longer than 2 characters');
+        if (strlen($phrase) < getenv(min_letters_count)) {
+            return $this->getSimpleMessage('More input needed', 'The word has to be longer than ' . getenv(min_letters_count) .  ' characters');
         }
 
         list($sourceLanguage, $targetLanguage) = $this->extractLanguages($command);
