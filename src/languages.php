@@ -28,6 +28,7 @@ Class Languages
         'fr' => 'French',
         'gl' => 'Galician',
         'ka' => 'Georgian',
+        'kk' => 'Kazakh',
         'de' => 'German',
         'el' => 'Greek',
         'gu' => 'Gujarati',
