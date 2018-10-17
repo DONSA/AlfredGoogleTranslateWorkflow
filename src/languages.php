@@ -40,6 +40,7 @@ Class Languages
         'ga' => 'Irish',
         'it' => 'Italian',
         'ja' => 'Japanese',
+	'kk' => 'Kazakhstan',
         'kn' => 'Kannada',
         'km' => 'Khmer',
         'ko' => 'Korean',
