@@ -1,5 +1,5 @@
 {
-    "name": "DONSA/AlfredGoogleTranslateWorkflow",
+    "name": "donsa/alfred-google-translate",
     "description": "Free Google Translate Workflow for Alfred 3",
     "keywords": ["google", "translate", "alfred", "php"],
     "license": "MIT",
@@ -11,6 +11,7 @@
         }
     ],
     "require": {
-        "stichoza/google-translate-php": "~3.2"
+        "stichoza/google-translate-php": "~3.2",
+        "ext-json": "*"
     }
 }

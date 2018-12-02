@@ -20,8 +20,8 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
         $command = array_shift($requestParts);
         $phrase = (count($requestParts) > 0) ? implode(' ', $requestParts) : $command;
 
-        if (strlen($phrase) < getenv(min_letters_count)) {
-            return $this->getSimpleMessage('More input needed', 'The word has to be longer than ' . getenv(min_letters_count) .  ' characters');
+        if (strlen($phrase) < getenv(MIN_LENGTH)) {
+            return $this->getSimpleMessage('More input needed', 'The word has to be longer than ' . getenv(MIN_LENGTH) .  ' characters');
         }
 
         list($sourceLanguage, $targetLanguage) = $this->extractLanguages($command);
@@ -76,7 +76,7 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
 			}
 
             // If any valid target languages are selected, write them back as csl or just return the default
-			if (count($targetLanguageList) == 0) {
+			if (\count($targetLanguageList) === 0) {
 				$targetLanguage = $this->settings['target'];
 			} else {
 				$targetLanguage = implode(',', $targetLanguageList);
@@ -99,11 +99,11 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
     protected function fetchGoogleTranslation($sourceLanguage, $targetLanguage, $phrase)
     {
         $response = [];
-        $sourceLanguage = ($sourceLanguage == 'auto') ? null : $sourceLanguage;
+        $sourceLanguage = ($sourceLanguage === 'auto') ? null : $sourceLanguage;
 
         try {
             $client = new TranslateClient($sourceLanguage, $targetLanguage);
-            $response = $client->getResponse($phrase);
+            $response = $client->translate($phrase);
         } catch (Exception $e) {
             $this->log($e->getMessage());
         }
@@ -141,7 +141,7 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
                 ]);
             }
         }
-        
+
         return $xml;
     }
 

@@ -77,7 +77,7 @@ Class Languages
 
     public function map($key = null)
     {
-        return is_null($key) ? $this->map['auto'] : $this->map[$key];
+        return $key === null ? $this->map['auto'] : $this->map[$key];
     }
 
     public function getAvailableLanguages()
