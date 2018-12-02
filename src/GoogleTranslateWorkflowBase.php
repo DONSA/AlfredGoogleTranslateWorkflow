@@ -81,8 +81,8 @@ class GoogleTranslateWorkflowBase
         $updatedSettings = [];
         if (isset($this->settings['sourceLanguage']) || isset($this->settings['targetLanguage'])) {
             foreach ($this->settings as $key => $value) {
-                $key = ($key == 'sourceLanguage') ? 'source' : $key;
-                $key = ($key == 'targetLanguage') ? 'target' : $key;
+                $key = ($key === 'sourceLanguage') ? 'source' : $key;
+                $key = ($key === 'targetLanguage') ? 'target' : $key;
 
                 $updatedSettings[$key] = $value;
             }
