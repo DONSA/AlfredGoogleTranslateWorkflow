@@ -1,7 +1,7 @@
 <?php
 
-require 'vendor/autoload.php';
-require './GoogleTranslateWorkflowBase.php';
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/GoogleTranslateWorkflowBase.php';
 
 use Stichoza\GoogleTranslate\TranslateClient;
 
@@ -40,54 +40,54 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
         return $result;
     }
 
-	/**
- 	 * This extracts valid languages from an input string
-	 *
-	 * @param string $command
-	 *
-	 * @return array
- 	 */
-	protected function extractLanguages($command)
-	{
-		// First check whether both, source and target language, are set
-		if (strpos($command, '>') > 0) {
-			list($sourceLanguage, $targetLanguage) = explode('>', $command);
-		} elseif (strpos($command, '<') > 0) {
-			list($targetLanguage, $sourceLanguage) = explode('<', $command);
-		} else {
-			$targetLanguage = $command;
-		}
+    /**
+     * This extracts valid languages from an input string
+     *
+     * @param string $command
+     *
+     * @return array
+     */
+    protected function extractLanguages($command)
+    {
+        // First check whether both, source and target language, are set
+        if (strpos($command, '>') > 0) {
+            list($sourceLanguage, $targetLanguage) = explode('>', $command);
+        } elseif (strpos($command, '<') > 0) {
+            list($targetLanguage, $sourceLanguage) = explode('<', $command);
+        } else {
+            $targetLanguage = $command;
+        }
 
-		// Check if the source language is valid
-		if (!$this->languages->isAvailable($sourceLanguage)) {
-			$sourceLanguage = $this->settings['source'];
-		}
+        // Check if the source language is valid
+        if (!$this->languages->isAvailable($sourceLanguage)) {
+            $sourceLanguage = $this->settings['source'];
+        }
 
-		// Check if the target language is valid
-		if (!$this->languages->isAvailable($targetLanguage)) {
-			// If not, maybe multiple target languages are defined.
-			// Try to parse multiple target languages
-			$incomingTargetLanguages = explode(',', $targetLanguage);
-			$targetLanguageList = [];
-			foreach ($incomingTargetLanguages as $itl) {
-				if ($this->languages->isAvailable($itl)) {
-					$targetLanguageList[] = $itl;
-				}
-			}
+        // Check if the target language is valid
+        if (!$this->languages->isAvailable($targetLanguage)) {
+            // If not, maybe multiple target languages are defined.
+            // Try to parse multiple target languages
+            $incomingTargetLanguages = explode(',', $targetLanguage);
+            $targetLanguageList = [];
+            foreach ($incomingTargetLanguages as $itl) {
+                if ($this->languages->isAvailable($itl)) {
+                    $targetLanguageList[] = $itl;
+                }
+            }
 
             // If any valid target languages are selected, write them back as csl or just return the default
-			if (\count($targetLanguageList) === 0) {
-				$targetLanguage = $this->settings['target'];
-			} else {
-				$targetLanguage = implode(',', $targetLanguageList);
-			}
-		}
+            if (\count($targetLanguageList) === 0) {
+                $targetLanguage = $this->settings['target'];
+            } else {
+                $targetLanguage = implode(',', $targetLanguageList);
+            }
+        }
 
-		return [
-		    strtolower($sourceLanguage),
-            strtolower($targetLanguage)
+        return [
+            strtolower($sourceLanguage),
+            strtolower($targetLanguage),
         ];
-	}
+    }
 
     /**
      * @param string $sourceLanguage
@@ -189,5 +189,4 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
 
         return $iconFilename;
     }
-
 }

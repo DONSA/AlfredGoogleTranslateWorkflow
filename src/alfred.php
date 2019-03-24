@@ -6,62 +6,79 @@ class AlfredResult
 
     private $shared;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->items = [];
         $this->shared = [];
     }
 
-    public function addItem($item) {
-        array_push($this->items, new AlfredResultItem($this, $item));
+    public function addItem($item)
+    {
+        $this->items[] = new AlfredResultItem($this, $item);
     }
 
-    public function getShared() {
+    public function getShared()
+    {
         return $this->shared;
     }
 
-    public function setShared($key, $value) {
+    public function setShared($key, $value)
+    {
         $this->shared[$key] = $value;
     }
 
-    public function __toString() {
-		$xml = '<?xml version="1.0" encoding="utf-8"?><items>';
+    public function __toString()
+    {
+        $xml = '<?xml version="1.0" encoding="utf-8"?><items>';
 
-		foreach ($this->items as $item) {
-			$xml .= $item;
-		}
+        foreach ($this->items as $item) {
+            $xml .= $item;
+        }
 
-		$xml .= "</items>";
+        $xml .= '</items>';
 
-		return $xml;
-	}
+        return $xml;
+    }
 }
 
 class AlfredResultItem
 {
-	private $result;
-	private $item;
+    private $result;
+    private $item;
 
-	public function __construct($result, $item) {
-		$this->result = $result;
-		$this->item = $item;
-	}
+    /**
+     * AlfredResultItem constructor.
+     *
+     * @param $result AlfredResult
+     * @param $item
+     */
+    public function __construct($result, $item)
+    {
+        $this->result = $result;
+        $this->item = $item;
+    }
 
-	public function __toString() {
-		$shared = $this->result->getShared();
-		$options = array_merge($shared, $this->item);
+    public function __toString()
+    {
+        $shared = $this->result->getShared();
+        $options = array_merge($shared, $this->item);
 
-		$xml = '<item';
-		foreach (['uid', 'arg', 'valid', 'autocomplete'] as $key) {
-			if (array_key_exists($key, $options)) $xml .= ' '.$key.'="'.$options[$key].'"';
-		}
-		$xml .= '>';
+        $xml = '<item';
+        foreach (['uid', 'arg', 'valid', 'autocomplete'] as $key) {
+            if (array_key_exists($key, $options)) {
+                $xml .= ' ' . $key . '="' . $options[$key] . '"';
+            }
+        }
+        $xml .= '>';
 
-		foreach (['title', 'subtitle', 'icon'] as $key) {
-			if (array_key_exists($key, $options)) $xml .= "<$key>".$options[$key]."</$key>";
-		}
+        foreach (['title', 'subtitle', 'icon'] as $key) {
+            if (array_key_exists($key, $options)) {
+                $xml .= "<{$key}>" . $options[$key] . "</{$key}>";
+            }
+        }
 
-		$xml .= '</item>';
+        $xml .= '</item>';
 
         return $xml;
-	}
+    }
 }

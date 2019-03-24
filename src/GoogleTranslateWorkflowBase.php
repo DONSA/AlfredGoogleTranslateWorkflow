@@ -1,14 +1,16 @@
 <?php
 
-require './alfred.php';
-require './workflows.php';
-require './languages.php';
+require __DIR__ . '/alfred.php';
+require __DIR__ . '/workflows.php';
+require __DIR__ . '/languages.php';
+
+use Symfony\Component\Dotenv\Dotenv;
 
 class GoogleTranslateWorkflowBase
 {
-    protected $DEBUG = false;
+    protected $debug = false;
 
-    protected $workflowsInstance;
+    protected $workFlows;
 
     protected $languages;
 
@@ -26,7 +28,7 @@ class GoogleTranslateWorkflowBase
 
     public function __construct()
     {
-        $this->workflowsInstance = new Workflows();
+        $this->workFlows = new Workflows();
         $this->languages = new Languages();
 
         $this->loadSettings();
@@ -34,22 +36,32 @@ class GoogleTranslateWorkflowBase
 
     public function loadSettings()
     {
-        $this->log('loadSettings');
-        $settings = null;
-        $filePath = $this->getConfigFilePath();
-        if (file_exists($filePath)) {
-            $settings = json_decode(file_get_contents($filePath), true);
+        $dotenv = new Dotenv();
+        $dotenv->load(__DIR__ . '/.env');
+
+        $isDevelopment = false;
+        if (getenv('APP_ENV') === 'dev') {
+            $isDevelopment = true;
         }
 
-        // Only set settings if anything is stored in config file. Otherwise use the defaults.
+        $this->log('loadSettings');
+
+        $settings = null;
+        if ($isDevelopment) {
+            $settings = json_decode(file_get_contents(__DIR__ . '/Tests/config.json'), true);
+        } else {
+            $filePath = $this->getConfigFilePath();
+            if (file_exists($filePath)) {
+                $settings = json_decode(file_get_contents($filePath), true);
+            }
+        }
+
+        // Only set settings if anything is stored in config file, otherwise use the defaults.
         if (is_array($settings)) {
             $this->settings = $settings;
         } else {
             $this->settings = $this->defaultSettings;
         }
-
-        // @TODO: Remove on next version
-        $this->updateKeys();
     }
 
     protected function saveSettings()
@@ -62,33 +74,14 @@ class GoogleTranslateWorkflowBase
      */
     protected function getConfigFilePath()
     {
-        return "{$this->workflowsInstance->data()}/config.json";
+        return "{$this->workFlows->data()}/config.json";
     }
 
     protected function log($data, $title = null)
     {
-        if ($this->DEBUG) {
+        if ($this->debug) {
             $msg = (!empty($title) ? $title . ': ' : '') . print_r($data, TRUE);
             file_put_contents('php://stdout', "{$msg}\n");
-        }
-    }
-
-    /**
-     * Update source and target settings keys
-     */
-    private function updateKeys()
-    {
-        $updatedSettings = [];
-        if (isset($this->settings['sourceLanguage']) || isset($this->settings['targetLanguage'])) {
-            foreach ($this->settings as $key => $value) {
-                $key = ($key === 'sourceLanguage') ? 'source' : $key;
-                $key = ($key === 'targetLanguage') ? 'target' : $key;
-
-                $updatedSettings[$key] = $value;
-            }
-
-            $this->settings = $updatedSettings;
-            $this->saveSettings();
         }
     }
 }

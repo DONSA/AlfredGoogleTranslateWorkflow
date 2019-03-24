@@ -12,6 +12,9 @@
     ],
     "require": {
         "stichoza/google-translate-php": "~3.2",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-curl": "^7.1",
+        "ext-simplexml": "^7.1",
+        "symfony/dotenv": "^4.2"
     }
 }

@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-require './GoogleTranslateWorkflowBase.php';
+require __DIR__ . '/GoogleTranslateWorkflowBase.php';
 
 class GoogleTranslateSettingsWorkflow extends GoogleTranslateWorkflowBase
 {
@@ -40,7 +40,7 @@ class GoogleTranslateSettingsWorkflow extends GoogleTranslateWorkflowBase
         $requestParts = explode(' ', $request);
         $command = array_shift($requestParts);
 
-        if ($command == 'show') {
+        if ($command === 'show') {
             $result = $this->showSettings();
         } else {
             $result = $this->set($command, $requestParts[0]);
@@ -98,7 +98,7 @@ class GoogleTranslateSettingsWorkflow extends GoogleTranslateWorkflowBase
         $setLength = strlen($setting);
         $validOptionKeys = array_keys($this->validOptions);
 
-        if (!in_array($setting, $validOptionKeys)) {
+        if (!in_array($setting, $validOptionKeys, true)) {
             // Find valid options
             $valid = array_filter($validOptionKeys, function($value) use($setting, $setLength) {
                 return ($setting  == strtolower(substr($value, 0, $setLength)));
@@ -123,7 +123,7 @@ class GoogleTranslateSettingsWorkflow extends GoogleTranslateWorkflowBase
             } else {
                 $trimmedValue = strtolower(trim($value));
 
-                if ($trimmedValue == 'default') {
+                if ($trimmedValue === 'default') {
                     $trimmedValue = $this->defaultSettings[$setting];
                 }
 
@@ -142,7 +142,7 @@ class GoogleTranslateSettingsWorkflow extends GoogleTranslateWorkflowBase
 
                     if (count($validLanguages) > 0) {
                         $checkedValue = implode(',', array_keys($validLanguages));
-                        $item['subtitle'] = "New value = " . implode(', ', $validLanguages) . " ({$checkedValue})";
+                        $item['subtitle'] = 'New value = ' . implode(', ', $validLanguages) . " ({$checkedValue})";
                         $item['arg'] = "{$setting}:{$checkedValue}";
                     } else {
                         $item['subtitle'] = "Invalid value {$value}";
