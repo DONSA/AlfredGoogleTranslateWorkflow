@@ -1,7 +1,6 @@
 <?php
 
-require __DIR__ . '/vendor/autoload.php';
-require __DIR__ . '/GoogleTranslateWorkflowBase.php';
+namespace App;
 
 use Stichoza\GoogleTranslate\TranslateClient;
 
@@ -20,8 +19,8 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
         $command = array_shift($requestParts);
         $phrase = (count($requestParts) > 0) ? implode(' ', $requestParts) : $command;
 
-        if (strlen($phrase) < getenv(MIN_LENGTH)) {
-            return $this->getSimpleMessage('More input needed', 'The word has to be longer than ' . getenv(MIN_LENGTH) .  ' characters');
+        if (strlen($phrase) < getenv('MIN_LENGTH')) {
+            return $this->getSimpleMessage('More input needed', 'The word has to be longer than ' . getenv('MIN_LENGTH') .  ' characters');
         }
 
         list($sourceLanguage, $targetLanguage) = $this->extractLanguages($command);

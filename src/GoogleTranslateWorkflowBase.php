@@ -1,8 +1,6 @@
 <?php
 
-require __DIR__ . '/alfred.php';
-require __DIR__ . '/workflows.php';
-require __DIR__ . '/languages.php';
+namespace App;
 
 use Symfony\Component\Dotenv\Dotenv;
 
@@ -36,19 +34,20 @@ class GoogleTranslateWorkflowBase
 
     public function loadSettings()
     {
-        $dotenv = new Dotenv();
-        $dotenv->load(__DIR__ . '/.env');
-
-        $isDevelopment = false;
-        if (getenv('APP_ENV') === 'dev') {
-            $isDevelopment = true;
+        if (!isset($_SERVER['APP_ENV'])) {
+            (new Dotenv())->load(__DIR__.'/../.env');
         }
 
-        $this->log('loadSettings');
+        if (getenv('APP_ENV') === 'dev') {
+            $this->debug = true;
+        }
 
         $settings = null;
-        if ($isDevelopment) {
-            $settings = json_decode(file_get_contents(__DIR__ . '/Tests/config.json'), true);
+        if ($this->debug) {
+            $settings = [
+                'source' => getenv('SETTINGS_SOURCE'),
+                'target' => getenv('SETTINGS_TARGET')
+            ];
         } else {
             $filePath = $this->getConfigFilePath();
             if (file_exists($filePath)) {
