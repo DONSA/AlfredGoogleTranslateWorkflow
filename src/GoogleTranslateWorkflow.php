@@ -181,9 +181,9 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
      */
     protected function getFlag($language)
     {
-        $iconFilename = "icons/{$language}.png";
+        $iconFilename = __DIR__."/icons/{$language}.png";
         if (!file_exists($iconFilename)) {
-            $iconFilename = 'icons/unknown.png';
+            $iconFilename = __DIR__.'/icons/unknown.png';
         }
 
         return $iconFilename;
