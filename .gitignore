@@ -2,3 +2,4 @@ src/vendor/
 .idea/
 .DS_Store
 src/.env
+info.plist
