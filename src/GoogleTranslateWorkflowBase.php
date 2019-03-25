@@ -34,8 +34,9 @@ class GoogleTranslateWorkflowBase
 
     public function loadSettings()
     {
-        if (!isset($_SERVER['APP_ENV'])) {
-            (new Dotenv())->load(__DIR__.'/../.env');
+        $envFilePath = __DIR__.'/../.env';
+        if (file_exists($envFilePath)) {
+            (new Dotenv())->load($envFilePath);
         }
 
         if (getenv('APP_ENV') === 'dev') {
