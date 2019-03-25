@@ -1,5 +1,4 @@
-vendor
+vendor/
 .idea/
 .DS_Store
-src/.env
 .env

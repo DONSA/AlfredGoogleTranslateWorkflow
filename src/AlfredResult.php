@@ -2,6 +2,8 @@
 
 namespace App;
 
+use DOMDocument;
+
 class AlfredResult
 {
     private $items;
@@ -14,11 +16,6 @@ class AlfredResult
         $this->shared = [];
     }
 
-    public function addItem($item)
-    {
-        $this->items[] = new AlfredResultItem($this, $item);
-    }
-
     public function getShared()
     {
         return $this->shared;
@@ -29,16 +26,29 @@ class AlfredResult
         $this->shared[$key] = $value;
     }
 
-    public function __toString()
+    public function getItems()
     {
-        $xml = '<?xml version="1.0" encoding="utf-8"?><items>';
+        $dom = new DOMDocument('1.0', 'utf-8');
+        $items = $dom->createElement('items');
 
         foreach ($this->items as $item) {
-            $xml .= $item;
+            $items->appendChild(
+                $item->getItem($dom)
+            );
         }
 
-        $xml .= '</items>';
+        $dom->appendChild($items);
 
-        return $xml;
+        return $dom;
+    }
+
+    public function addItem($item)
+    {
+        $this->items[] = new AlfredResultItem($this, $item);
+    }
+
+    public function __toString()
+    {
+        return $this->getItems()->saveXML();
     }
 }

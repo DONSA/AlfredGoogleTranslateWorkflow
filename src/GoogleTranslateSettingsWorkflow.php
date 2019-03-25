@@ -11,8 +11,6 @@ class GoogleTranslateSettingsWorkflow extends GoogleTranslateWorkflowBase
      */
     public function process($request)
     {
-        $this->log($request);
-
         $requestParts = explode(' ', $request);
         $command = array_shift($requestParts);
 
@@ -20,9 +18,7 @@ class GoogleTranslateSettingsWorkflow extends GoogleTranslateWorkflowBase
             $result = $this->showSettings();
         } else {
             $result = $this->set($command, $requestParts[0]);
-        }
-
-        $this->log($result);
+        };
 
         return $result;
     }
@@ -48,7 +44,6 @@ class GoogleTranslateSettingsWorkflow extends GoogleTranslateWorkflowBase
     {
         $xml = new AlfredResult();
         $xml->setShared('uid', 'setting');
-        $this->log($this->settings, 'SHOW settings');
 
         foreach ($this->settings as $settingKey => $settingValue) {
             $xml->addItem([

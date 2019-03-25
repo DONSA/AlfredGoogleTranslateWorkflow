@@ -10,11 +10,10 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
      * @param string $request
      *
      * @return AlfredResult
+     * @throws \Exception
      */
     public function process($request)
     {
-        $this->log($request);
-
         $requestParts = explode(' ', $request);
         $command = array_shift($requestParts);
         $phrase = (count($requestParts) > 0) ? implode(' ', $requestParts) : $command;
@@ -24,19 +23,14 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
         }
 
         list($sourceLanguage, $targetLanguage) = $this->extractLanguages($command);
-        $this->log([$sourceLanguage, $targetLanguage]);
         $targetLanguages = explode(',', $targetLanguage);
 
         $googleResults = [];
         foreach ($targetLanguages as $targetLanguage) {
             $googleResults[$targetLanguage] = $this->fetchGoogleTranslation($sourceLanguage, $targetLanguage, $phrase);
         }
-        $this->log($googleResults, 'Google Results');
 
-        $result = $this->processGoogleResults($googleResults, $phrase, $sourceLanguage);
-        $this->log($result);
-
-        return $result;
+        return $this->processGoogleResults($googleResults, $phrase, $sourceLanguage);
     }
 
     /**
@@ -94,26 +88,20 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
      * @param string $phrase
      *
      * @return array|string
+     * @throws \Exception
      */
     protected function fetchGoogleTranslation($sourceLanguage, $targetLanguage, $phrase)
     {
-        $response = [];
         $sourceLanguage = ($sourceLanguage === 'auto') ? null : $sourceLanguage;
 
-        try {
-            $client = new TranslateClient($sourceLanguage, $targetLanguage);
-            $response = $client->translate($phrase);
-        } catch (Exception $e) {
-            $this->log($e->getMessage());
-        }
+        $client = new TranslateClient($sourceLanguage, $targetLanguage);
 
-        return $response;
+        return $client->translate($phrase);
     }
 
     protected function processGoogleResults(array $googleResults, $sourcePhrase, $sourceLanguage)
     {
         $xml = new AlfredResult();
-        $xml->setShared('uid', 'mtranslate');
 
         if (!count($googleResults)) {
             $xml->addItem([
@@ -124,6 +112,7 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
         foreach ($googleResults as $targetLanguage => $result) {
             if (is_array($result)) {
                 $xml->addItem([
+                    'uid' => $targetLanguage,
                     'arg' => $this->getUserURL($sourceLanguage, $targetLanguage, $sourcePhrase) . '|' . $result[0][0][0],
                     'valid' => 'yes',
                     'title' => $result[0][0][0],
@@ -132,6 +121,7 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
                 ]);
             } else {
                 $xml->addItem([
+                    'uid' => $targetLanguage,
                     'arg' => $this->getUserURL($sourceLanguage, $targetLanguage, $sourcePhrase) . '|' . $result,
                     'valid' => 'yes',
                     'title' => $result,

@@ -6,8 +6,6 @@ use Symfony\Component\Dotenv\Dotenv;
 
 class GoogleTranslateWorkflowBase
 {
-    protected $debug = false;
-
     protected $workFlows;
 
     protected $languages;
@@ -39,17 +37,8 @@ class GoogleTranslateWorkflowBase
             (new Dotenv())->load($envFilePath);
         }
 
-        if (getenv('APP_ENV') === 'dev') {
-            $this->debug = true;
-        }
-
         $settings = null;
-        if ($this->debug) {
-            $settings = [
-                'source' => getenv('SETTINGS_SOURCE'),
-                'target' => getenv('SETTINGS_TARGET')
-            ];
-        } else {
+        if (getenv('APP_ENV') !== 'dev') {
             $filePath = $this->getConfigFilePath();
             if (file_exists($filePath)) {
                 $settings = json_decode(file_get_contents($filePath), true);
@@ -64,6 +53,11 @@ class GoogleTranslateWorkflowBase
         }
     }
 
+    public function setSettings($settings)
+    {
+        $this->settings = $settings;
+    }
+
     protected function saveSettings()
     {
         file_put_contents($this->getConfigFilePath(), json_encode($this->settings));
@@ -75,13 +69,5 @@ class GoogleTranslateWorkflowBase
     protected function getConfigFilePath()
     {
         return "{$this->workFlows->data()}/config.json";
-    }
-
-    protected function log($data, $title = null)
-    {
-        if ($this->debug) {
-            $msg = (!empty($title) ? $title . ': ' : '') . print_r($data, TRUE);
-            file_put_contents('php://stdout', "{$msg}\n");
-        }
     }
 }

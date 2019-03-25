@@ -132,7 +132,7 @@ class Workflows
      *
      * @return string
      */
-    public function toxml($data = "", $format = 'array')
+    public function toxml($data = '', $format = 'array')
     {
         if (!$data && empty($this->results)) {
             return '';

@@ -19,27 +19,31 @@ class AlfredResultItem
         $this->item = $item;
     }
 
-    public function __toString()
+    public function getItem(\DOMDocument $dom)
     {
-        $shared = $this->result->getShared();
-        $options = array_merge($shared, $this->item);
+        $options = array_merge(
+            $this->result->getShared(),
+            $this->item
+        );
 
-        $xml = '<item';
-        foreach (['uid', 'arg', 'valid', 'autocomplete'] as $key) {
-            if (array_key_exists($key, $options)) {
-                $xml .= ' ' . $key . '="' . $options[$key] . '"';
+        $item = $dom->createElement('item');
+
+        foreach (['uid', 'arg', 'valid', 'autocomplete'] as $name) {
+            if (array_key_exists($name, $options)) {
+                $item->setAttribute($name, $options[$name]);
             }
         }
-        $xml .= '>';
 
         foreach (['title', 'subtitle', 'icon'] as $key) {
             if (array_key_exists($key, $options)) {
-                $xml .= "<{$key}>" . $options[$key] . "</{$key}>";
+                $child = $dom->createElement($key);
+                $text = $dom->createTextNode($options[$key]);
+
+                $child->appendChild($text);
+                $item->appendChild($child);
             }
         }
 
-        $xml .= '</item>';
-
-        return $xml;
+        return $item;
     }
 }

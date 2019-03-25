@@ -7,47 +7,71 @@ use PHPUnit\Framework\TestCase;
 
 class WorkflowTest extends TestCase
 {
-    public function testInputIsNotCutOff()
+    private $items;
+
+    /**
+     * @throws \Exception
+     */
+    public function setUp()
     {
-        $status = false;
+        parent::setUp();
+
         $workflow = new GoogleTranslateWorkflow();
+        $workflow->setSettings([
+            'source' => 'auto',
+            'target' => 'pt,en,sv'
+        ]);
+
         $output = $workflow->process('gt This is a test');
 
-        $xml = simplexml_load_string($output);
-        foreach ($xml->children() as $item) {
-            $in = explode('|', $item->attributes()->arg);
-
-            if (stripslashes($in[1]) === 'This is a test') {
-                $status = true;
-            }
-        }
-
-        $this->assertTrue($status);
+        $this->items = simplexml_load_string($output);
     }
 
+    /**
+     * @throws \Exception
+     */
+    public function testInputIsNotCutOff()
+    {
+        $this->assertNotContains('gt', $this->getTranslation($this->items->item[0]->attributes()->arg));
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testInputHasCorrectUid()
+    {
+        $this->assertEquals('pt', $this->items->item[0]->attributes()->uid);
+        $this->assertEquals('en', $this->items->item[1]->attributes()->uid);
+        $this->assertEquals('sv', $this->items->item[2]->attributes()->uid);
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function testTranslationOrder()
     {
-        $status = true;
-        $workflow = new GoogleTranslateWorkflow();
-        $output = $workflow->process('gt This is a test');
+        $this->assertEquals('Isto é um teste', $this->getTranslation($this->items->item[0]->attributes()->arg));
+        $this->assertEquals('This is a test', $this->getTranslation($this->items->item[1]->attributes()->arg));
+        $this->assertEquals('Detta är ett prov', $this->getTranslation($this->items->item[2]->attributes()->arg));
+    }
 
-        $xml = simplexml_load_string($output);
+    /**
+     * @param string $arg
+     *
+     * @return string
+     */
+    private function getTranslation($arg)
+    {
+        return explode('|', $arg)[1];
+    }
 
-        $in = explode('|', $xml->children()[0]->attributes()->arg);
-        if ($in[1] !== 'Isto é um teste') {
-            $status = false;
-        }
-
-        $in = explode('|', $xml->children()[1]->attributes()->arg);
-        if ($in[1] !== 'This is a test') {
-            $status = false;
-        }
-
-        $in = explode('|', $xml->children()[2]->attributes()->arg);
-        if ($in[1] !== 'Detta är ett prov') {
-            $status = false;
-        }
-
-        $this->assertTrue($status);
+    /**
+     * @param string $arg
+     *
+     * @return string
+     */
+    private function getUrl($arg)
+    {
+        return explode('|', $arg)[0];
     }
 }
