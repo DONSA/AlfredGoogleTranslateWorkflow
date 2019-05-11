@@ -7,24 +7,30 @@ Download and double click the [workflow](https://github.com/DONSA/alfred-google-
 
 ## How to use
 
-The simplest way is to use the **⇧ + ⌘ + g** shortcut and start typing.
+The simplest way is to use the (**⇧ + ⌘ + g**) shortcut and start typing.  
+Default source language is '**auto**' and target is '**en**'. Check [Settings](#settings) section to set your own. 
 
-You can also use your Alfred hotkey and then type '**gt**' followed by the target language shortcode(s):
+You can also use your Alfred hotkey and then type '**gt**' or '**translate**' followed by the text that needs to be translated:
 ```
-gt pt,fr Text to translate
+gt Text to translate
 ```
 
-Use the '**from**' and '**to**' keywords to specify in which language do you want to translate. You can do this via the '**>**' or '**<**' operator and the respective language codes:
+Use the '**from**' and '**to**' keywords to specify the languages you want to translate. You can do this via the '**>**' or '**<**' operator and the respective language codes:
 ```
 gt pt>en Palavra
 gt de>fr Wort
 gt fr<en Word
 ```
 
+If you don't know the source language just use the keyword '**auto**':
+```
+gt auto>pt Text to translate
+```
+
 Navigate through the results and press:
 - **Enter** to copy the translation to your clipboard
-- **Alt+Enter** to open the original request directly on the Google Translator website
-- **Cmd+Enter** to copy and paste the translation into your active application automatically
+- **Alt + Enter** to open the original request directly on the Google Translator website
+- **Cmd + Enter** to copy and paste the translation into your active application automatically
 
 
 ## Settings

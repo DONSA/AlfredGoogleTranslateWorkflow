@@ -32,7 +32,7 @@ class GoogleTranslateWorkflowBase
 
     public function loadSettings()
     {
-        $envFilePath = __DIR__.'/../.env';
+        $envFilePath = __DIR__ . '/../.env';
         if (file_exists($envFilePath)) {
             (new Dotenv())->load($envFilePath);
         }

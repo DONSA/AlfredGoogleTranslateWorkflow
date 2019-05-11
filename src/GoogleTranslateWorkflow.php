@@ -2,53 +2,55 @@
 
 namespace App;
 
+use function \count;
 use Stichoza\GoogleTranslate\TranslateClient;
 
 class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
 {
     /**
-     * @param string $request
+     * @param string $input
      *
      * @return AlfredResult
      * @throws \Exception
      */
-    public function process($request)
+    public function process($input)
     {
-        $requestParts = explode(' ', $request);
-        $command = array_shift($requestParts);
-        $phrase = (count($requestParts) > 0) ? implode(' ', $requestParts) : $command;
-
-        if (strlen($phrase) < getenv('MIN_LENGTH')) {
-            return $this->getSimpleMessage('More input needed', 'The word has to be longer than ' . getenv('MIN_LENGTH') .  ' characters');
+        if (preg_match('/(?P<command>^[a-z-><,]+)/', $input, $match)) {
+            $command = strtolower($match['command']);
+            $text = trim(str_replace($match['command'], '', $input));
+        } else {
+            $command = '';
+            $text = trim($input);
         }
 
-        list($sourceLanguage, $targetLanguage) = $this->extractLanguages($command);
-        $targetLanguages = explode(',', $targetLanguage);
+        if (strlen($text) < getenv('MIN_LENGTH')) {
+            return $this->getSimpleMessage('More input needed', 'Input must be longer than ' . getenv('MIN_LENGTH') .  ' characters');
+        }
+
+        list($sourceLanguage, $targetLanguages) = $this->extractLanguages($command);
 
         $googleResults = [];
         foreach ($targetLanguages as $targetLanguage) {
-            $googleResults[$targetLanguage] = $this->fetchGoogleTranslation($sourceLanguage, $targetLanguage, $phrase);
+            $googleResults[$targetLanguage] = $this->fetchGoogleTranslation($sourceLanguage, $targetLanguage, $text);
         }
 
-        return $this->processGoogleResults($googleResults, $phrase, $sourceLanguage);
+        return $this->processGoogleResults($googleResults, $text, $sourceLanguage);
     }
 
     /**
-     * This extracts valid languages from an input string
-     *
      * @param string $command
      *
      * @return array
      */
     protected function extractLanguages($command)
     {
+        $sourceLanguage = $targetLanguage = '';
+
         // First check whether both, source and target language, are set
         if (strpos($command, '>') > 0) {
             list($sourceLanguage, $targetLanguage) = explode('>', $command);
         } elseif (strpos($command, '<') > 0) {
             list($targetLanguage, $sourceLanguage) = explode('<', $command);
-        } else {
-            $targetLanguage = $command;
         }
 
         // Check if the source language is valid
@@ -58,8 +60,7 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
 
         // Check if the target language is valid
         if (!$this->languages->isAvailable($targetLanguage)) {
-            // If not, maybe multiple target languages are defined.
-            // Try to parse multiple target languages
+            // If not, try to parse multiple target languages
             $incomingTargetLanguages = explode(',', $targetLanguage);
             $targetLanguageList = [];
             foreach ($incomingTargetLanguages as $itl) {
@@ -68,17 +69,17 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
                 }
             }
 
-            // If any valid target languages are selected, write them back as csl or just return the default
-            if (\count($targetLanguageList) === 0) {
-                $targetLanguage = $this->settings['target'];
+            // If any valid target languages are selected write them back as csl or just return the default
+            if (count($targetLanguageList) === 0) {
+                $targetLanguage = explode(',', $this->settings['target']);
             } else {
-                $targetLanguage = implode(',', $targetLanguageList);
+                $targetLanguage = $targetLanguageList;
             }
         }
 
         return [
-            strtolower($sourceLanguage),
-            strtolower($targetLanguage),
+            $sourceLanguage,
+            $targetLanguage,
         ];
     }
 
@@ -92,8 +93,6 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
      */
     protected function fetchGoogleTranslation($sourceLanguage, $targetLanguage, $phrase)
     {
-        $sourceLanguage = ($sourceLanguage === 'auto') ? null : $sourceLanguage;
-
         $client = new TranslateClient($sourceLanguage, $targetLanguage);
 
         return $client->translate($phrase);

@@ -22,7 +22,7 @@ class WorkflowTest extends TestCase
             'target' => 'pt,en,sv'
         ]);
 
-        $output = $workflow->process('gt This is a test');
+        $output = $workflow->process('This is a test');
 
         $this->items = simplexml_load_string($output);
     }
@@ -30,9 +30,37 @@ class WorkflowTest extends TestCase
     /**
      * @throws \Exception
      */
+    public function testTranslationFromSourceToTargetLanguages()
+    {
+        $workflow = new GoogleTranslateWorkflow();
+        $output = $workflow->process('en>pt,es This is a test');
+
+        $items = simplexml_load_string($output);
+
+        $this->assertEquals('pt', $items->item[0]->attributes()->uid);
+        $this->assertEquals('es', $items->item[1]->attributes()->uid);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testTranslationFromTargetToSource()
+    {
+        $workflow = new GoogleTranslateWorkflow();
+        $output = $workflow->process('pt,es<en This is a test');
+
+        $items = simplexml_load_string($output);
+
+        $this->assertEquals('pt', $items->item[0]->attributes()->uid);
+        $this->assertEquals('es', $items->item[1]->attributes()->uid);
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function testInputIsNotCutOff()
     {
-        $this->assertNotContains('gt', $this->getTranslation($this->items->item[0]->attributes()->arg));
+        $this->assertNotContains('gt', $this->getTranslation($this->items->item[0]));
     }
 
     /**
@@ -50,19 +78,19 @@ class WorkflowTest extends TestCase
      */
     public function testTranslationOrder()
     {
-        $this->assertEquals('Isto é um teste', $this->getTranslation($this->items->item[0]->attributes()->arg));
-        $this->assertEquals('This is a test', $this->getTranslation($this->items->item[1]->attributes()->arg));
-        $this->assertEquals('Detta är ett prov', $this->getTranslation($this->items->item[2]->attributes()->arg));
+        $this->assertEquals('Isto é um teste', $this->getTranslation($this->items->item[0]));
+        $this->assertEquals('This is a test', $this->getTranslation($this->items->item[1]));
+        $this->assertEquals('Detta är ett prov', $this->getTranslation($this->items->item[2]));
     }
 
     /**
-     * @param string $arg
+     * @param \SimpleXMLElement $item
      *
      * @return string
      */
-    private function getTranslation($arg)
+    private function getTranslation($item)
     {
-        return explode('|', $arg)[1];
+        return explode('|', $item->attributes()->arg)[1];
     }
 
     /**
