@@ -75,6 +75,8 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
             } else {
                 $targetLanguage = $targetLanguageList;
             }
+        } else {
+            $targetLanguage = [$targetLanguage];
         }
 
         return [
