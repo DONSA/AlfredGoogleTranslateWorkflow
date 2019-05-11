@@ -30,6 +30,19 @@ class WorkflowTest extends TestCase
     /**
      * @throws \Exception
      */
+    public function testTranslationFromSourceToTargetLanguage()
+    {
+        $workflow = new GoogleTranslateWorkflow();
+        $output = $workflow->process('en>pt This is a test');
+
+        $items = simplexml_load_string($output);
+
+        $this->assertCount(1, $items);
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function testTranslationFromSourceToTargetLanguages()
     {
         $workflow = new GoogleTranslateWorkflow();
@@ -37,8 +50,7 @@ class WorkflowTest extends TestCase
 
         $items = simplexml_load_string($output);
 
-        $this->assertEquals('pt', $items->item[0]->attributes()->uid);
-        $this->assertEquals('es', $items->item[1]->attributes()->uid);
+        $this->assertCount(2, $items);
     }
 
     /**
@@ -53,14 +65,6 @@ class WorkflowTest extends TestCase
 
         $this->assertEquals('pt', $items->item[0]->attributes()->uid);
         $this->assertEquals('es', $items->item[1]->attributes()->uid);
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function testInputIsNotCutOff()
-    {
-        $this->assertNotContains('gt', $this->getTranslation($this->items->item[0]));
     }
 
     /**
