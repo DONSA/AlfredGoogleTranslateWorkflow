@@ -15,7 +15,7 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
      */
     public function process($input)
     {
-        if (preg_match('/(?P<command>^[a-z-><,]+)/', $input, $match)) {
+        if (preg_match('/(?P<command>^[a-z-,]{2,}(>|<)[a-z-,]{2,})/', $input, $match)) {
             $command = strtolower($match['command']);
             $text = trim(str_replace($match['command'], '', $input));
         } else {

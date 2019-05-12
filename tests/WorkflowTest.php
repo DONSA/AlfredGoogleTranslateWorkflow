@@ -30,6 +30,19 @@ class WorkflowTest extends TestCase
     /**
      * @throws \Exception
      */
+    public function testTranslationWithInsufficientCharacters()
+    {
+        $workflow = new GoogleTranslateWorkflow();
+        $output = $workflow->process('te');
+
+        $items = simplexml_load_string($output);
+
+        $this->assertEquals('More input needed', $items->item[0]->title);
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function testTranslationFromSourceToTargetLanguage()
     {
         $workflow = new GoogleTranslateWorkflow();
@@ -65,6 +78,19 @@ class WorkflowTest extends TestCase
 
         $this->assertEquals('pt', $items->item[0]->attributes()->uid);
         $this->assertEquals('es', $items->item[1]->attributes()->uid);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testTranslationWithoutFromANDTargetLanguages()
+    {
+        $workflow = new GoogleTranslateWorkflow();
+        $output = $workflow->process('test');
+
+        $items = simplexml_load_string($output);
+
+        $this->assertEquals('en', $items->item[0]->attributes()->uid);
     }
 
     /**
