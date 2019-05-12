@@ -268,7 +268,7 @@ echo stripslashes($in[1]);
 				<string>require_once 'vendor/autoload.php';
 
 $gtwf = new App\GoogleTranslateWorkflow();
-echo $gtwf-&gt;process("translate {query}");</string>
+echo $gtwf-&gt;process("{query}");</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -430,7 +430,7 @@ echo stripslashes($in[1]);</string>
 				<string>require_once 'vendor/autoload.php';
 
 $gtwf = new App\GoogleTranslateWorkflow();
-echo $gtwf-&gt;process("gt {query}");</string>
+echo $gtwf-&gt;process("{query}");</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
 				<key>scriptfile</key>
@@ -676,7 +676,7 @@ It displays all possible translations that Google has to offer.</string>
 		<string>2</string>
 	</dict>
 	<key>version</key>
-	<string>3.6.0</string>
+	<string>3.7.0</string>
 	<key>webaddress</key>
 	<string></string>
 </dict>
