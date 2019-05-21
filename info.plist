@@ -217,6 +217,23 @@
 		<dict>
 			<key>config</key>
 			<dict>
+				<key>autopaste</key>
+				<false/>
+				<key>clipboardtext</key>
+				<string></string>
+				<key>transient</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.clipboard</string>
+			<key>uid</key>
+			<string>3D812156-6A07-474D-AB9C-C0D3B6DC0ECF</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
 				<key>concurrently</key>
 				<false/>
 				<key>escaping</key>
@@ -323,23 +340,6 @@ echo $gtwf-&gt;process("{query}");</string>
 		<dict>
 			<key>config</key>
 			<dict>
-				<key>autopaste</key>
-				<false/>
-				<key>clipboardtext</key>
-				<string></string>
-				<key>transient</key>
-				<false/>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.output.clipboard</string>
-			<key>uid</key>
-			<string>3D812156-6A07-474D-AB9C-C0D3B6DC0ECF</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
 				<key>concurrently</key>
 				<false/>
 				<key>escaping</key>
@@ -375,29 +375,6 @@ echo stripslashes($in[1]);</string>
 			<string>alfred.workflow.output.clipboard</string>
 			<key>uid</key>
 			<string>DC25C28B-C651-4FCB-97AC-309BB4EBBC23</string>
-			<key>version</key>
-			<integer>2</integer>
-		</dict>
-		<dict>
-			<key>config</key>
-			<dict>
-				<key>concurrently</key>
-				<false/>
-				<key>escaping</key>
-				<integer>127</integer>
-				<key>script</key>
-				<string>open {query}</string>
-				<key>scriptargtype</key>
-				<integer>0</integer>
-				<key>scriptfile</key>
-				<string></string>
-				<key>type</key>
-				<integer>0</integer>
-			</dict>
-			<key>type</key>
-			<string>alfred.workflow.action.script</string>
-			<key>uid</key>
-			<string>61046C6D-24FB-492C-BF76-584619DB729F</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
@@ -472,6 +449,29 @@ echo $in[0];</string>
 			<string>alfred.workflow.action.script</string>
 			<key>uid</key>
 			<string>F6AD7144-A500-4CBC-81FE-1BCD819AAF39</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>127</integer>
+				<key>script</key>
+				<string>open {query}</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>61046C6D-24FB-492C-BF76-584619DB729F</string>
 			<key>version</key>
 			<integer>2</integer>
 		</dict>
@@ -554,8 +554,9 @@ echo $gtset-&gt;process("{query}");</string>
 				<key>escaping</key>
 				<integer>127</integer>
 				<key>script</key>
-				<string>require_once 'GoogleTranslateSettingsWorkflow.php';
-$gtset = new GoogleTranslateSettingsWorkflow();
+				<string>require_once 'vendor/autoload.php';
+
+$gtset = new App\GoogleTranslateSettingsWorkflow();
 echo $gtset-&gt;store("{query}");</string>
 				<key>scriptargtype</key>
 				<integer>0</integer>
