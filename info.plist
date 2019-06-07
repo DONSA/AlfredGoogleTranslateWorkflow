@@ -229,7 +229,7 @@
 			<key>uid</key>
 			<string>3D812156-6A07-474D-AB9C-C0D3B6DC0ECF</string>
 			<key>version</key>
-			<integer>2</integer>
+			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -263,6 +263,8 @@ echo stripslashes($in[1]);
 				<false/>
 				<key>alfredfiltersresultsmatchmode</key>
 				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<false/>
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
@@ -304,7 +306,7 @@ echo $gtwf-&gt;process("{query}");</string>
 			<key>uid</key>
 			<string>C852D4A8-132A-4A0B-A930-B91C2C0B61BE</string>
 			<key>version</key>
-			<integer>2</integer>
+			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -376,7 +378,7 @@ echo stripslashes($in[1]);</string>
 			<key>uid</key>
 			<string>DC25C28B-C651-4FCB-97AC-309BB4EBBC23</string>
 			<key>version</key>
-			<integer>2</integer>
+			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -385,6 +387,8 @@ echo stripslashes($in[1]);</string>
 				<false/>
 				<key>alfredfiltersresultsmatchmode</key>
 				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<false/>
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
@@ -426,7 +430,7 @@ echo $gtwf-&gt;process("{query}");</string>
 			<key>uid</key>
 			<string>6D5E0BC8-BB35-4DE4-A613-5F8486B3C5CD</string>
 			<key>version</key>
-			<integer>2</integer>
+			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -503,6 +507,8 @@ echo $in[0];</string>
 				<false/>
 				<key>alfredfiltersresultsmatchmode</key>
 				<integer>0</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<false/>
 				<key>argumenttrimmode</key>
 				<integer>0</integer>
 				<key>argumenttype</key>
@@ -544,7 +550,7 @@ echo $gtset-&gt;process("{query}");</string>
 			<key>uid</key>
 			<string>4779C69A-07C0-4CAF-B321-0149FFEC8020</string>
 			<key>version</key>
-			<integer>2</integer>
+			<integer>3</integer>
 		</dict>
 		<dict>
 			<key>config</key>
@@ -676,8 +682,10 @@ It displays all possible translations that Google has to offer.</string>
 		<key>MIN_LENGTH</key>
 		<string>2</string>
 	</dict>
+	<key>variablesdontexport</key>
+	<array/>
 	<key>version</key>
-	<string>3.7.0</string>
+	<string>3.7.1</string>
 	<key>webaddress</key>
 	<string></string>
 </dict>
