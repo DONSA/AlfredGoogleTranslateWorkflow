@@ -685,7 +685,7 @@ It displays all possible translations that Google has to offer.</string>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>3.7.1</string>
+	<string>3.8.0</string>
 	<key>webaddress</key>
 	<string></string>
 </dict>
