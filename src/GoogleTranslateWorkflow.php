@@ -3,7 +3,7 @@
 namespace App;
 
 use function \count;
-use Stichoza\GoogleTranslate\TranslateClient;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
 {
@@ -86,18 +86,20 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
     }
 
     /**
-     * @param string $sourceLanguage
-     * @param string $targetLanguage
+     * @param string $source
+     * @param string $target
      * @param string $phrase
      *
      * @return array|string
      * @throws \Exception
      */
-    protected function fetchGoogleTranslation($sourceLanguage, $targetLanguage, $phrase)
+    protected function fetchGoogleTranslation($source, $target, $phrase)
     {
-        $client = new TranslateClient($sourceLanguage, $targetLanguage);
+        $gt = new GoogleTranslate();
+        $gt->setSource($source);
+        $gt->setTarget($target);
 
-        return $client->translate($phrase);
+        return $gt->translate($phrase);
     }
 
     protected function processGoogleResults(array $googleResults, $sourcePhrase, $sourceLanguage)
@@ -172,9 +174,9 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
      */
     protected function getFlag($language)
     {
-        $iconFilename = __DIR__."/icons/{$language}.png";
+        $iconFilename = __DIR__ . "/icons/{$language}.png";
         if (!file_exists($iconFilename)) {
-            $iconFilename = __DIR__.'/icons/unknown.png';
+            $iconFilename = __DIR__ . '/icons/unknown.png';
         }
 
         return $iconFilename;

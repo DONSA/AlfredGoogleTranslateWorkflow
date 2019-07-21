@@ -7,26 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 class WorkflowTest extends TestCase
 {
-    private $items;
-
-    /**
-     * @throws \Exception
-     */
-    public function setUp()
-    {
-        parent::setUp();
-
-        $workflow = new GoogleTranslateWorkflow();
-        $workflow->setSettings([
-            'source' => 'auto',
-            'target' => 'pt,en,sv'
-        ]);
-
-        $output = $workflow->process('This is a test');
-
-        $this->items = simplexml_load_string($output);
-    }
-
     /**
      * @throws \Exception
      */
@@ -98,9 +78,19 @@ class WorkflowTest extends TestCase
      */
     public function testInputHasCorrectUid()
     {
-        $this->assertEquals('pt', $this->items->item[0]->attributes()->uid);
-        $this->assertEquals('en', $this->items->item[1]->attributes()->uid);
-        $this->assertEquals('sv', $this->items->item[2]->attributes()->uid);
+        $workflow = new GoogleTranslateWorkflow();
+        $workflow->setSettings([
+            'source' => 'auto',
+            'target' => 'pt,en,sv'
+        ]);
+
+        $output = $workflow->process('Why is this is a test');
+
+        $items = simplexml_load_string($output);
+
+        $this->assertEquals('pt', $items->item[0]->attributes()->uid);
+        $this->assertEquals('en', $items->item[1]->attributes()->uid);
+        $this->assertEquals('sv', $items->item[2]->attributes()->uid);
     }
 
     /**
@@ -108,9 +98,19 @@ class WorkflowTest extends TestCase
      */
     public function testTranslationOrder()
     {
-        $this->assertEquals('Isto é um teste', $this->getTranslation($this->items->item[0]));
-        $this->assertEquals('This is a test', $this->getTranslation($this->items->item[1]));
-        $this->assertEquals('Detta är ett prov', $this->getTranslation($this->items->item[2]));
+        $workflow = new GoogleTranslateWorkflow();
+        $workflow->setSettings([
+            'source' => 'auto',
+            'target' => 'pt,en,sv'
+        ]);
+
+        $output = $workflow->process('This is a test');
+
+        $items = simplexml_load_string($output);
+
+        $this->assertEquals('Isto é um teste', $this->getTranslation($items->item[0]));
+        $this->assertEquals('This is a test', $this->getTranslation($items->item[1]));
+        $this->assertEquals('Detta är ett prov', $this->getTranslation($items->item[2]));
     }
 
     /**
