@@ -4,57 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "059766bc8fc1911e731669905f524d6d",
+    "content-hash": "a4156b6239c6b9879e13f2c154174eec",
     "packages": [
-        {
-            "name": "donsa/google-translate-php",
-            "version": "v4.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/DONSA/google-translate-php.git",
-                "reference": "9ebf616444c6f837ed2f959ec63ed4a7946795ae"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/DONSA/google-translate-php/zipball/9ebf616444c6f837ed2f959ec63ed4a7946795ae",
-                "reference": "9ebf616444c6f837ed2f959ec63ed4a7946795ae",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "ext-mbstring": "*",
-                "guzzlehttp/guzzle": "~6.0",
-                "php": "^7.1"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^7.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Stichoza\\GoogleTranslate\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Nuno Lopes",
-                    "email": "nunolopes99@gmail.com"
-                }
-            ],
-            "description": "Free Google Translate API PHP Package",
-            "homepage": "http://github.com/donsa/google-translate-php",
-            "keywords": [
-                "google",
-                "php",
-                "translate",
-                "translator"
-            ],
-            "time": "2019-07-21T21:01:01+00:00"
-        },
         {
             "name": "guzzlehttp/guzzle",
             "version": "6.3.3",
@@ -333,6 +284,55 @@
             "time": "2019-03-08T08:55:37+00:00"
         },
         {
+            "name": "stichoza/google-translate-php",
+            "version": "v4.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Stichoza/google-translate-php.git",
+                "reference": "6109b1e0035c6694aac38c2f9e119b6264c2bfb1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Stichoza/google-translate-php/zipball/6109b1e0035c6694aac38c2f9e119b6264c2bfb1",
+                "reference": "6109b1e0035c6694aac38c2f9e119b6264c2bfb1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "guzzlehttp/guzzle": "~6.0",
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Stichoza\\GoogleTranslate\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Levan Velijanashvili",
+                    "email": "me@stichoza.com"
+                }
+            ],
+            "description": "Free Google Translate API PHP Package",
+            "homepage": "http://github.com/Stichoza/google-translate-php",
+            "keywords": [
+                "google",
+                "php",
+                "translate",
+                "translator"
+            ],
+            "time": "2019-07-22T22:28:03+00:00"
+        },
+        {
             "name": "symfony/dotenv",
             "version": "v4.2.4",
             "source": {
@@ -446,6 +446,55 @@
                 "instantiate"
             ],
             "time": "2019-03-17T17:37:11+00:00"
+        },
+        {
+            "name": "donsa/google-translate-php",
+            "version": "v4.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/DONSA/google-translate-php.git",
+                "reference": "9ebf616444c6f837ed2f959ec63ed4a7946795ae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/DONSA/google-translate-php/zipball/9ebf616444c6f837ed2f959ec63ed4a7946795ae",
+                "reference": "9ebf616444c6f837ed2f959ec63ed4a7946795ae",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "guzzlehttp/guzzle": "~6.0",
+                "php": "^7.1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Stichoza\\GoogleTranslate\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nuno Lopes",
+                    "email": "nunolopes99@gmail.com"
+                }
+            ],
+            "description": "Free Google Translate API PHP Package",
+            "homepage": "http://github.com/donsa/google-translate-php",
+            "keywords": [
+                "google",
+                "php",
+                "translate",
+                "translator"
+            ],
+            "time": "2019-07-21T21:01:01+00:00"
         },
         {
             "name": "myclabs/deep-copy",
@@ -1759,7 +1808,7 @@
                 },
                 {
                     "name": "Gert de Pagter",
-                    "email": "backendtea@gmail.com"
+                    "email": "BackEndTea@gmail.com"
                 }
             ],
             "description": "Symfony polyfill for ctype functions",
