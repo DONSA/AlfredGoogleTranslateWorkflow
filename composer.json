@@ -3,7 +3,7 @@
     "description": "Free Google Translate Workflow for Alfred 3",
     "keywords": ["google", "translate", "alfred", "php"],
     "license": "MIT",
-    "homepage": "https://github.com/DONSA/AlfredGoogleTranslateWorkflow",
+    "homepage": "https://github.com/DONSA/alfred-google-translate",
     "authors": [
         {
             "name": "Nuno Lopes",

@@ -13,28 +13,20 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
      * @return AlfredResult
      * @throws \Exception
      */
-    public function process($input)
+    public function process(string $input)
     {
-        if (preg_match('/(?P<command>^[a-z-,]{2,}(>|<)[a-z-,]{2,})/', $input, $match)) {
-            $command = strtolower($match['command']);
-            $text = trim(str_replace($match['command'], '', $input));
-        } else {
-            $command = '';
-            $text = trim($input);
-        }
+        [$source, $targets, $text] = $this->parseInput($input);
 
         if (strlen($text) < getenv('MIN_LENGTH')) {
             return $this->getSimpleMessage('More input needed', 'Input must be longer than ' . getenv('MIN_LENGTH') .  ' characters');
         }
 
-        list($sourceLanguage, $targetLanguages) = $this->extractLanguages($command);
-
-        $googleResults = [];
-        foreach ($targetLanguages as $targetLanguage) {
-            $googleResults[$targetLanguage] = $this->fetchGoogleTranslation($sourceLanguage, $targetLanguage, $text);
+        $response = [];
+        foreach ($targets as $target) {
+            $response[$target] = $this->fetchGoogleTranslation($source, $target, $text);
         }
 
-        return $this->processGoogleResults($googleResults, $text, $sourceLanguage);
+        return $this->processResponse($response, $source, $targets, $text);
     }
 
     /**
@@ -99,38 +91,58 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
         $gt->setSource($source);
         $gt->setTarget($target);
 
-        return $gt->translate($phrase);
+        return $gt->getResponse($phrase);
     }
 
-    protected function processGoogleResults(array $googleResults, $sourcePhrase, $sourceLanguage)
+    /**
+     * @param array $response
+     * @param string $source
+     * @param array $targets
+     * @param string $text
+     *
+     * @return AlfredResult
+     */
+    protected function processResponse(array $response, string $source, array $targets, string $text)
     {
         $xml = new AlfredResult();
 
-        if (!count($googleResults)) {
+        if (!$response) {
             $xml->addItem([
                 'title' => 'No results found'
             ]);
         }
 
-        foreach ($googleResults as $targetLanguage => $result) {
-            if (is_array($result)) {
-                $xml->addItem([
-                    'uid' => $targetLanguage,
-                    'arg' => $this->getUserURL($sourceLanguage, $targetLanguage, $sourcePhrase) . '|' . $result[0][0][0],
-                    'valid' => 'yes',
-                    'title' => $result[0][0][0],
-                    'subtitle' => "{$sourcePhrase} ({$this->languages->map($result[1])})",
-                    'icon' => $this->getFlag($targetLanguage)
-                ]);
-            } else {
-                $xml->addItem([
-                    'uid' => $targetLanguage,
-                    'arg' => $this->getUserURL($sourceLanguage, $targetLanguage, $sourcePhrase) . '|' . $result,
-                    'valid' => 'yes',
-                    'title' => $result,
-                    'subtitle' => "{$sourcePhrase} ({$this->languages->map($sourceLanguage)})",
-                    'icon' => $this->getFlag($targetLanguage)
-                ]);
+        foreach ($response as $targetLanguage => $result) {
+            $hasMultipleTargetLanguages = count($targets) > 1;
+            $hasAlternativeTranslations = (bool) $result[1];
+            $translation = $hasAlternativeTranslations ? $result[0][0][1] : $result[0][0][0];
+
+            $xml->addItem([
+                'uid' => $targetLanguage,
+                'arg' => $this->getUserURL($source, $targetLanguage, $text) . '|' . $translation,
+                'valid' => 'yes',
+                'title' => $translation,
+                'subtitle' => "{$text} ({$this->languages->map($source)})",
+                'icon' => $this->getFlag($targetLanguage)
+            ]);
+
+            if (!$hasMultipleTargetLanguages && $hasAlternativeTranslations) {
+                foreach ($result[1] as $alternatives) {
+                    $xml->addItem([
+                        'valid' => 'no',
+                        'title' => ucfirst($alternatives[0]),
+                    ]);
+
+                    foreach ($alternatives[2] as $i => $alternative) {
+                        $xml->addItem([
+                            'arg' => $this->getUserURL($source, $targetLanguage, $text) . '|' . $alternative[0],
+                            'valid' => 'yes',
+                            'title' => ucfirst($alternative[0]),
+                            'subtitle' => '(' . implode(', ', $alternative[1]) . ')',
+                            'icon' => $this->getFlag($targetLanguage)
+                        ]);
+                    }
+                }
             }
         }
 
@@ -143,7 +155,7 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
      *
      * @return AlfredResult
      */
-    protected function getSimpleMessage($message, $subtitle = '')
+    protected function getSimpleMessage(string $message, string $subtitle = '')
     {
         $xml = new AlfredResult();
         $xml->setShared('uid', 'mtranslate');
@@ -180,5 +192,28 @@ class GoogleTranslateWorkflow extends GoogleTranslateWorkflowBase
         }
 
         return $iconFilename;
+    }
+
+    /**
+     * @param string $input
+     * @return array
+     */
+    private function parseInput(string $input)
+    {
+        $command = '';
+        $text = trim($input);
+
+        if (preg_match('/(?P<command>^[a-z-,]{2,}(>|<)[a-z-,]{2,})/', $input, $match)) {
+            $command = strtolower($match['command']);
+            $text = trim(str_replace($match['command'], '', $input));
+        }
+
+        [$source, $targets] = $this->extractLanguages($command);
+
+        return [
+            $source,
+            $targets,
+            $text
+        ];
     }
 }

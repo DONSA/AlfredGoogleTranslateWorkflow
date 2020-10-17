@@ -23,23 +23,36 @@ class WorkflowTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testTranslationFromSourceToTargetLanguage()
+    public function testTranslationFromSourceToTargetLanguages()
     {
         $workflow = new GoogleTranslateWorkflow();
-        $output = $workflow->process('en>pt This is a test');
+        $output = $workflow->process('en>pt,es this is a test');
 
         $items = simplexml_load_string($output);
 
-        $this->assertCount(1, $items);
+        $this->assertCount(2, $items);
     }
 
     /**
      * @throws \Exception
      */
-    public function testTranslationFromSourceToTargetLanguages()
+    public function testTranslationFromSourceToTargetLanguageHasAlternativeTranslations()
     {
         $workflow = new GoogleTranslateWorkflow();
-        $output = $workflow->process('en>pt,es This is a test');
+        $output = $workflow->process('en>pt test');
+
+        $items = simplexml_load_string($output);
+
+        $this->assertGreaterThan(1, count($items));
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testTranslationFromSourceToTargetLanguageHasNotAlternativeTranslations()
+    {
+        $workflow = new GoogleTranslateWorkflow();
+        $output = $workflow->process('en>pt,es test');
 
         $items = simplexml_load_string($output);
 
@@ -52,7 +65,7 @@ class WorkflowTest extends TestCase
     public function testTranslationFromTargetToSource()
     {
         $workflow = new GoogleTranslateWorkflow();
-        $output = $workflow->process('pt,es<en This is a test');
+        $output = $workflow->process('pt,es<en this is a test');
 
         $items = simplexml_load_string($output);
 
@@ -121,15 +134,5 @@ class WorkflowTest extends TestCase
     private function getTranslation($item)
     {
         return explode('|', $item->attributes()->arg)[1];
-    }
-
-    /**
-     * @param string $arg
-     *
-     * @return string
-     */
-    private function getUrl($arg)
-    {
-        return explode('|', $arg)[0];
     }
 }
